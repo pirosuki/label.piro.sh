@@ -1,0 +1,28 @@
+{
+	"name": "label",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.2.4",
+		"@sveltejs/kit": "^2.5.22",
+		"@sveltejs/vite-plugin-svelte": "^3.1.1",
+		"svelte": "^4.2.18",
+		"svelte-check": "^3.8.5",
+		"tslib": "^2.6.3",
+		"typescript": "^5.5.4",
+		"vite": "^5.4.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@pdfme/common": "^4.3.2",
+		"@pdfme/generator": "^4.3.2",
+		"pdf-lib": "^1.17.1"
+	}
+}
