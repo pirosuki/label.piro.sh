@@ -7,7 +7,20 @@ npm run dev -- --host
         margin: unset;
         width: 100%;
         height: 100%;
-        background: rgb(75, 75, 75);
+    }
+
+    :global(body) {
+        background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
+        background-size: cover;
+        background-position: center;
+    }
+
+    #background_cover {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, .15);  
+        backdrop-filter: blur(20px);
     }
 
     #left_div, #right_div {
@@ -15,118 +28,163 @@ npm run dev -- --host
         margin: 10px;
         width: calc(50% - 15px);
         height: calc(100% - 20px);
-        background-color: rgb(58, 58, 58);
+        opacity: 85%;
     }
 
     #right_div {
         margin-left: 0px;
     }
 
-    /* input */
-    #input {
+    #input, .list_item {
         width: 100%;
         aspect-ratio: 5 / 1;
         border-radius: 10px;
-        background-color: rgb(43, 43, 43);
+        background-color: rgb(255, 255, 255);
     }
 
-    #input_thumbnail {
+    #input_thumbs, .list_item_thumbs {
         float: left;
         height: 100%;
+        width: 20%;
     }
-    #input_fields {
+
+    #input_qrcode, #input_thumbnail, .list_item_qrcode, .list_item_thumbnail {
+        position: relative;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+    }
+    #input_thumbnail, .list_item_thumbnail {
+        display: none;
+    }
+    #input_fields, .list_item_fields {
         float: left;
         height: 100%;
-        width: 70%;
+        width: calc(70% - 20px);
     }
-    .input_field {
+    .input_field, .list_item_field {
         display: block;
         border: unset;
         padding: unset;
         height: 20%;
         width: 100%;
         background-color: unset;
-        color: white;
+        color: rgb(0, 0, 0);
     }
-    #input_count {
+    #input_count, .list_item_count {
         float: left;
-        margin-bottom: 10px;
+        margin-left: 10px;
+        margin-top: 10px;
         border: unset;
         padding: unset;
         width: 10%;
-        height: calc(60% - 5px);
-        background-color: rgb(66, 66, 66);
-        color: white;
+        border-radius: 10px;
+        text-align: center;
+        height: calc(60% - 20px);
+        background-color: rgb(220, 220, 220);
+        color: rgb(0, 0, 0);
     }
-    #input_add {
+    #input_add, .list_item_delete {
         float: left;
+        margin-left: 10px;
+        margin-top: 10px;
         border: unset;
         padding: unset;
+        border-radius: 10px;
         width: 10%;
-        height: calc(40% - 5px);
-        background-color: rgb(66, 66, 66);
-        color: white;
+        height: calc(40% - 10px);
+        background-color: rgb(220, 220, 220);
+        color: rgb(0, 0, 0);
     }
 
-    /* history */
     #history {
+        margin-top: 10px;
+        border-radius: 10px;
+        background-color: rgb(40, 40, 40, 0.5);
+        height: calc(100% - 10vw - 8px);
+        overflow-y: scroll;
+    }
 
+    .history_item {
+        width: 100%;
+        aspect-ratio: 6 / 1;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 5px;
+    }
+
+    .history_item_fields {
+        float: left;
+        height: 100%;
+        width: calc(90% - 20px);
+    }
+
+    .history_item_field {
+        display: block;
+        border: unset;
+        padding: unset;
+        margin-left: 10px;
+        height: 25%;
+        width: 100%;
+        background-color: unset;
+        color: rgb(0, 0, 0);
+    }
+
+    .history_item_use {
+        float: left;
+        margin-left: 10px;
+        margin-top: 10px;
+        border: unset;
+        padding: unset;
+        width: 10%;
+        border-radius: 10px;
+        text-align: center;
+        height: calc(60% - 20px);
+        background-color: rgb(220, 220, 220);
+        color: rgb(0, 0, 0);
+    }
+
+    .history_item_delete {
+        float: left;
+        margin-left: 10px;
+        margin-top: 10px;
+        border: unset;
+        padding: unset;
+        border-radius: 10px;
+        width: 10%;
+        height: calc(40% - 10px);
+        background-color: rgb(220, 220, 220);
+        color: rgb(0, 0, 0);
+    }
+
+    #list {
+        height: calc(80% - 10px);
+        border-radius: 10px;
+        background-color: rgb(40, 40, 40, 0.5);
+        margin-bottom: 10px;
+        overflow-y: scroll;
     }
 
     .list_item {
-        width: calc(100% - 20px);
-        margin: 10px;
-        aspect-ratio: 5 / 1;
-        border-radius: 5px;
-        background-color: rgb(37, 37, 37);
+        margin-bottom: 5px;
     }
-    .list_item_thumbnail {
-        float: left;
-        height: 100%;
-    }
-    .list_item_fields {
-        float: left;
-        height: 100%;
-        width: 70%;
-    }
-    .list_item_field {
-        display: block;
-        border: unset;
-        padding: unset;
-        height: 20%;
-        width: 100%;
-        background-color: unset;
-        color: white;
-    }
-    .list_item_count {
-        float: left;
-        margin-bottom: 10px;
-        border: unset;
-        padding: unset;
-        width: 10%;
-        height: calc(60% - 5px);
-        border-radius: 5px;
-        background-color: rgb(66, 66, 66);
-        color: white;
-    }
-    .list_item_delete {
-        float: left;
-        border: unset;
-        padding: unset;
-        width: 10%;
-        height: calc(40% - 5px);
-        border-radius: 5px;
-        background-color: rgb(66, 66, 66);
-        color: white;
-    }
+
+    #output {
+        height: calc(20%);
+        border-radius: 10px;
+        margin-top: 0;
+        background-color: rgb(40, 40, 40, 0.5);
+}
 </style>
 
 <script lang="ts">
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
 
-    // import { PDFDocument, degrees } from 'pdf-lib';
-    // import { generate } from '@pdfme/generator';
+    import { PDFDocument, degrees } from '@pdfme/pdf-lib';
+    import { generate } from '@pdfme/generator';
+    import type { BlankPdf, Template } from '@pdfme/common';
+    import { text, barcodes, image } from '@pdfme/schemas';
 
     type history_item = {
         "field1": string,
@@ -138,6 +196,7 @@ npm run dev -- --host
     const history = writable<history_type>({});
 
     type list_item = {
+        "qrcode": string,
         "thumbnail": string,
         "field1": string,
         "field2": string,
@@ -150,7 +209,8 @@ npm run dev -- --host
     const list = writable<list_type>({}); // https://dev.to/danawoodman/svelte-quick-tip-connect-a-store-to-local-storage-4idi
 
     type input_elements_type = {
-        "thumbnail": HTMLImageElement,
+        "qrcode": HTMLInputElement,
+        "thumbnail": HTMLInputElement,
         "field1": HTMLInputElement,
         "field2": HTMLInputElement,
         "field3": HTMLInputElement,
@@ -170,19 +230,31 @@ npm run dev -- --host
         history.subscribe((value) => localStorage.history = JSON.stringify(value));
 
         input_elements = {
-        "thumbnail": (document.getElementById('input_thumbnail') as HTMLImageElement),
-        "field1": (document.getElementById('input_field1') as HTMLInputElement),
-        "field2": (document.getElementById('input_field2') as HTMLInputElement),
-        "field3": (document.getElementById('input_field3') as HTMLInputElement),
-        "field4": (document.getElementById('input_field4') as HTMLInputElement),
-        "field5": (document.getElementById('input_field5') as HTMLInputElement),
-        "count": (document.getElementById('input_count') as HTMLInputElement)
+            "qrcode": (document.getElementById('input_qrcode') as HTMLInputElement),
+            "thumbnail": (document.getElementById('input_thumbnail') as HTMLInputElement),
+            "field1": (document.getElementById('input_field1') as HTMLInputElement),
+            "field2": (document.getElementById('input_field2') as HTMLInputElement),
+            "field3": (document.getElementById('input_field3') as HTMLInputElement),
+            "field4": (document.getElementById('input_field4') as HTMLInputElement),
+            "field5": (document.getElementById('input_field5') as HTMLInputElement),
+            "count": (document.getElementById('input_count') as HTMLInputElement)
         };
     });
 
     function addItem() {
+        let qrcodeValue = "";
+        let thumbnailValue = "";
+
+        if (input_elements.qrcode.style.display !== "none") {
+            qrcodeValue = localStorage.lastQrcode;
+        }
+        else {
+            thumbnailValue = localStorage.lastThumbnail;
+        }
+
         let input_values = {
-            "thumbnail": (input_elements.thumbnail).src,
+            "qrcode": qrcodeValue,
+            "thumbnail": thumbnailValue,
             "field1": (input_elements.field1).value,
             "field2": (input_elements.field2).value,
             "field3": (input_elements.field3).value,
@@ -260,24 +332,161 @@ npm run dev -- --host
     }
     
     function useHistory(element: EventTarget & HTMLInputElement) {
-        let thing = $history[element.parentElement?.id as string];
+        let historyEntry = $history[element.parentElement?.id as string];
 
-        input_elements.field1.value = thing.field1;
-        input_elements.field2.value = thing.field2;
-        input_elements.field3.value = thing.field3;
-        input_elements.field4.value = thing.field4;
+        input_elements.field1.value = historyEntry.field1;
+        input_elements.field2.value = historyEntry.field2;
+        input_elements.field3.value = historyEntry.field3;
+        input_elements.field4.value = historyEntry.field4;
+    }
+
+    function editQrcode() {
+        let newQrcode: string | null = prompt("Enter QR Code value", localStorage.lastQrcode);
+    
+        // fix this // refuses to save to localstorage
+        if (newQrcode) {
+            localStorage.lastQrcode = newQrcode;
+        }
+    }
+
+    function editThumbnail() {
+        // fix this
+        console.log("pls fix")
+    }
+
+    function editItemQrcode(element: EventTarget & HTMLInputElement) {
+        let listEntry = $list[element.parentElement?.parentElement?.id as string];
+
+        let newQrcode: string | null = prompt("Enter QR Code value", listEntry.qrcode);
+    
+        if (newQrcode) {
+            listEntry.qrcode = newQrcode;
+        }
+    }
+
+    function editItemThumbnail(element: EventTarget & HTMLInputElement) {
+        // fix this
+        console.log("pls fix")
+    }
+
+    const template: Template = {
+        basePdf: <BlankPdf> {
+            width: 100,
+            height: 20,
+            padding: [0, 0, 0, 0]
+        },
+        schemas: [
+            {
+                qrcodeField: {
+                    type: "qrcode",
+                    position: {
+                        x: 2,
+                        y: 2
+                    },
+                    width: 16,
+                    height: 16
+                },
+                thumbnailField: {
+                    type: "image",
+                    position: {
+                        x: 2,
+                        y: 2
+                    },
+                    width: 16,
+                    height: 16
+                },
+                textField1: {
+                    type: "text",
+                    position: {
+                        x: 20,
+                        y: 0.5
+                    },
+                    width: 80,
+                    height: 4,
+                    fontSize: 10,
+                    fontName: "field1font"
+                },
+                textField2: {
+                    type: "text",
+                    position: {
+                        x: 20,
+                        y: 4.5
+                    },
+                    width: 80,
+                    height: 4,
+                    fontSize: 8,
+                    fontName: "field2font"
+                },
+                textField3: {
+                    type: "text",
+                    position: {
+                        x: 20,
+                        y: 8.5
+                    },
+                    width: 80,
+                    height: 4,
+                    fontSize: 8,
+                    fontName: "field3font"
+                },
+                textField4: {
+                    type: "text",
+                    position: {
+                        x: 20,
+                        y: 12.5
+                    },
+                    width: 80,
+                    height: 3.5,
+                    fontSize: 6,
+                    fontName: "field4font"
+                },
+                textField5: {
+                    type: "text",
+                    position: {
+                        x: 20,
+                        y: 16
+                    },
+                    width: 80,
+                    height: 3.5,
+                    fontSize: 6,
+                    fontName: "field5font"
+                }
+            }
+        ]
+    }
+
+    function generatePDF() {
+        Object.entries($list).forEach(listEntry => {
+            const inputs = [{
+                qrcodeField: listEntry[1].qrcode,
+                thumbnailField: listEntry[1].thumbnail,
+                textField1: listEntry[1].field1,
+                textField2: listEntry[1].field2,
+                textField3: listEntry[1].field3,
+                textField4: listEntry[1].field4,
+                textField5: listEntry[1].field5
+            }]
+
+
+        })
+
+        /*
+        generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }}).then(pdf => {
+            const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+
+            // swap to hidden iframe?
+            window.open(URL.createObjectURL(blob));
+        })
+        */
     }
 </script>
 
-<!--
-<button on:click={() => console.log(localStorage)}>localStorage</button>
-<button on:click={() => console.log($list)}>$list</button>
-<button on:click={() => localStorage.clear()}>clear</button>
--->
-
+<div id="background_cover"></div>
 <div id="left_div">
     <div id="input">
-        <img id="input_thumbnail" src="https://piro.sh/fromg.png" alt="input item thumbnail">
+        <div id="input_thumbs">
+            <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input item qrcode" on:click={() => editQrcode()}>
+            <input id="input_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="input item thumbnail" on:click={() => editThumbnail()}>
+        </div>
         <div id="input_fields">
             <input id="input_field1" class="input_field input_field_large" placeholder="field1">
             <input id="input_field2" class="input_field input_field_medium" placeholder="field2">
@@ -392,10 +601,10 @@ npm run dev -- --host
         {#each Object.entries($history) as [id, item]}
         <div id={id} class="history_item">
             <div class="history_item_fields">
-                <input id="field1" class="history_item_field history_item_field_large" placeholder="field1" value={$history[id].field1}>
-                <input id="field2" class="history_item_field history_item_field_medium" placeholder="field2" value={$history[id].field2}>
-                <input id="field3" class="history_item_field history_item_field_medium" placeholder="field3" value={$history[id].field3}>
-                <input id="field4" class="history_item_field history_item_field_medium" placeholder="field4" value={$history[id].field4}>
+                <input id="field1" class="history_item_field history_item_field_large" placeholder="field1" value={$history[id].field1} disabled>
+                <input id="field2" class="history_item_field history_item_field_medium" placeholder="field2" value={$history[id].field2} disabled>
+                <input id="field3" class="history_item_field history_item_field_medium" placeholder="field3" value={$history[id].field3} disabled>
+                <input id="field4" class="history_item_field history_item_field_medium" placeholder="field4" value={$history[id].field4} disabled>
             </div>
             <input class="history_item_use" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
             <input class="history_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
@@ -407,7 +616,10 @@ npm run dev -- --host
     <div id="list">
         {#each Object.entries($list) as [id, item]}
         <div id={id} class="list_item">
-            <img id="thumbnail" class="list_item_thumbnail" src="https://piro.sh/fromg.png" alt="list item thumbnail">
+            <div class="list_item_thumbs">
+                <input id="qrcode" class="list_item_qrcode" type="image" src="./sampleqrcode.svg" alt="list item qrcode" on:click={(event) => editItemQrcode(event.currentTarget)}>
+                <input id="thumbnail" class="list_item_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="list item thumbnail" on:click={(event) => editItemThumbnail(event.currentTarget)}>
+            </div>
             <div class="list_item_fields">
                 <input id="field1" class="list_item_field list_item_field_large" placeholder="field1" bind:value={$list[id].field1}>
                 <input id="field2" class="list_item_field list_item_field_medium" placeholder="field2" bind:value={$list[id].field2}>
@@ -459,16 +671,6 @@ npm run dev -- --host
                 <option value="41">41</option>
                 <option value="42">42</option>
                 <option value="43">43</option>
-                <option value="44">44</option>
-                <option value="45">45</option>
-                <option value="46">46</option>
-                <option value="47">47</option>
-                <option value="48">48</option>
-                <option value="49">49</option>
-                <option value="50">50</option>
-                <option value="51">51</option>
-                <option value="52">52</option>
-                <option value="53">53</option>
                 <option value="54">54</option>
                 <option value="55">55</option>
                 <option value="56">56</option>
@@ -519,5 +721,11 @@ npm run dev -- --host
             <input class="list_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
         </div>
         {/each}
+    </div>
+    <div id="output">
+        <button on:click={() => generatePDF()}>generatePDF()</button>
+        <button on:click={() => console.log(localStorage)}>localStorage</button>
+        <button on:click={() => console.log($list)}>$list</button>
+        <button on:click={() => localStorage.clear()}>clear</button>
     </div>
 </div>
