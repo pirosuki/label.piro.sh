@@ -24,6 +24,7 @@ npm run dev -- --host
     }
 
     #left_div, #right_div {
+        float: left;
         margin: 1vh;
         opacity: 85%;
     }
@@ -44,7 +45,6 @@ npm run dev -- --host
     }
     @media screen and (orientation:landscape) {
         #left_div, #right_div {
-            float: left;
             width: calc(50% - 1.5vh);
             height: calc(100% - 2vh);
         }
