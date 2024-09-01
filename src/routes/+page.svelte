@@ -355,12 +355,12 @@ npm run dev -- --host
     }
 
     function editItemQrcode(element: EventTarget & HTMLInputElement) {
-        let listEntry = $list[element.parentElement?.parentElement?.id as string];
+        let listEntryId = element.parentElement?.parentElement?.id;
 
-        let newQrcode: string | null = prompt("Enter QR Code value", listEntry.qrcode);
+        let newQrcode: string | null = prompt("Enter QR Code value", $list[listEntryId as string].qrcode);
     
         if (newQrcode) {
-            listEntry.qrcode = newQrcode;
+            $list[listEntryId as string].qrcode = newQrcode;
         }
     }
 
@@ -468,6 +468,8 @@ npm run dev -- --host
 
 
         })
+
+
 
         /*
         generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }}).then(pdf => {
