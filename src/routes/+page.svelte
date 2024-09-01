@@ -24,21 +24,44 @@ npm run dev -- --host
     }
 
     #left_div, #right_div {
-        float: left;
-        margin: 10px;
-        width: calc(50% - 15px);
-        height: calc(100% - 20px);
+        margin: 1vh;
         opacity: 85%;
     }
 
-    #right_div {
-        margin-left: 0px;
+    @media screen and (orientation:portrait) {
+        #left_div, #right_div {
+            width: calc(100% - 15px);
+            height: calc(50% - 20px);
+        }
+
+        #right_div {
+            margin-top: 0px;
+        }
+
+        #history {
+            height: calc(100% - 20vw - 8px);
+        }
+    }
+    @media screen and (orientation:landscape) {
+        #left_div, #right_div {
+            float: left;
+            width: calc(50% - 1.5vh);
+            height: calc(100% - 2vh);
+        }
+
+        #right_div {
+            margin-left: 0px;
+        }
+
+        #history {
+            height: calc(100% - 10vw - 0.8vh);
+        }
     }
 
     #input, .list_item {
         width: 100%;
         aspect-ratio: 5 / 1;
-        border-radius: 10px;
+        border-radius: 1vh;
         background-color: rgb(255, 255, 255);
     }
 
@@ -73,44 +96,43 @@ npm run dev -- --host
     }
     #input_count, .list_item_count {
         float: left;
-        margin-left: 10px;
-        margin-top: 10px;
+        margin-left: 1vh;
+        margin-top: 1vh;
         border: unset;
         padding: unset;
         width: 10%;
-        border-radius: 10px;
+        border-radius: 1vh;
         text-align: center;
-        height: calc(60% - 20px);
+        height: calc(60% - 2vh);
         background-color: rgb(220, 220, 220);
         color: rgb(0, 0, 0);
     }
     #input_add, .list_item_delete {
         float: left;
-        margin-left: 10px;
-        margin-top: 10px;
+        margin-left: 1vh;
+        margin-top: 1vh;
         border: unset;
         padding: unset;
-        border-radius: 10px;
+        border-radius: 1vh;
         width: 10%;
-        height: calc(40% - 10px);
+        height: calc(40% - 1vh);
         background-color: rgb(220, 220, 220);
         color: rgb(0, 0, 0);
     }
 
     #history {
-        margin-top: 10px;
-        border-radius: 10px;
+        margin-top: 1vh;
+        border-radius: 1vh;
         background-color: rgb(40, 40, 40, 0.5);
-        height: calc(100% - 10vw - 8px);
         overflow-y: scroll;
     }
 
     .history_item {
-        width: 100%;
+        margin: 0.5vh;
+        width: calc(100% - 1vh);
         aspect-ratio: 6 / 1;
-        border-radius: 10px;
+        border-radius: 1vh;
         background-color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 5px;
     }
 
     .history_item_fields {
@@ -123,7 +145,7 @@ npm run dev -- --host
         display: block;
         border: unset;
         padding: unset;
-        margin-left: 10px;
+        margin-left: 1vh;
         height: 25%;
         width: 100%;
         background-color: unset;
@@ -132,46 +154,47 @@ npm run dev -- --host
 
     .history_item_use {
         float: left;
-        margin-left: 10px;
-        margin-top: 10px;
+        margin-left: 1vh;
+        margin-top: 1vh;
         border: unset;
         padding: unset;
         width: 10%;
-        border-radius: 10px;
+        border-radius: 1vh;
         text-align: center;
-        height: calc(60% - 20px);
+        height: calc(60% - 2vh);
         background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
     }
 
     .history_item_delete {
         float: left;
-        margin-left: 10px;
-        margin-top: 10px;
+        margin-left: 1vh;
+        margin-top: 1vh;
         border: unset;
         padding: unset;
-        border-radius: 10px;
+        border-radius: 1vh;
         width: 10%;
-        height: calc(40% - 10px);
+        height: calc(40% - 1vh);
         background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
     }
 
     #list {
-        height: calc(80% - 10px);
-        border-radius: 10px;
+        height: calc(80% - 1vh);
+        border-radius: 1vh;
         background-color: rgb(40, 40, 40, 0.5);
-        margin-bottom: 10px;
+        margin-bottom: 1vh;
         overflow-y: scroll;
     }
 
     .list_item {
-        margin-bottom: 5px;
+        margin: 0.5vh;
+        width: calc(100% - 1vh);
     }
 
     #output {
         height: calc(20%);
-        border-radius: 10px;
+        border-radius: 1vh;
         margin-top: 0;
         background-color: rgb(40, 40, 40, 0.5);
 }
