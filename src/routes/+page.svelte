@@ -30,16 +30,16 @@ npm run dev -- --host
 
     @media screen and (orientation:portrait) {
         #left_div, #right_div {
-            width: calc(100% - 15px);
-            height: calc(50% - 20px);
+            width: calc(100% - 2vh);
+            height: calc(50% - 1.5vh);
         }
 
         #right_div {
-            margin-top: 0px;
+            margin-top: 0;
         }
 
         #history {
-            height: calc(100% - 20vw - 8px);
+            height: calc(100% - 20vw - 0.8vh);
         }
     }
     @media screen and (orientation:landscape) {
@@ -50,7 +50,7 @@ npm run dev -- --host
         }
 
         #right_div {
-            margin-left: 0px;
+            margin-left: 0;
         }
 
         #history {
@@ -83,7 +83,7 @@ npm run dev -- --host
     #input_fields, .list_item_fields {
         float: left;
         height: 100%;
-        width: calc(70% - 20px);
+        width: calc(70% - 2vh);
     }
     .input_field, .list_item_field {
         display: block;
@@ -138,7 +138,7 @@ npm run dev -- --host
     .history_item_fields {
         float: left;
         height: 100%;
-        width: calc(90% - 20px);
+        width: calc(90% - 2vh);
     }
 
     .history_item_field {
