@@ -140,7 +140,7 @@ npm run dev -- --host
         border-radius: 10px;
         text-align: center;
         height: calc(60% - 20px);
-        background-color: rgb(220, 220, 220);
+        background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
     }
 
@@ -153,7 +153,7 @@ npm run dev -- --host
         border-radius: 10px;
         width: 10%;
         height: calc(40% - 10px);
-        background-color: rgb(220, 220, 220);
+        background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
     }
 
