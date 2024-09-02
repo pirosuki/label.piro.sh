@@ -7,6 +7,8 @@ npm run dev -- --host
         margin: unset;
         width: 100%;
         height: 100%;
+        background-color: black;
+        overscroll-behavior: none;
     }
 
     :global(body) {
@@ -25,14 +27,14 @@ npm run dev -- --host
 
     #left_div, #right_div {
         float: left;
-        margin: 1vh;
+        margin: 1vmin;
         opacity: 85%;
     }
 
     @media screen and (orientation:portrait) {
         #left_div, #right_div {
-            width: calc(100% - 2vh);
-            height: calc(50% - 1.5vh);
+            width: calc(100% - 2vmin);
+            height: calc(50% - 1.5vmin);
         }
 
         #right_div {
@@ -40,13 +42,13 @@ npm run dev -- --host
         }
 
         #history {
-            height: calc(100% - 20vw - 0.8vh);
+            height: calc(100% - 20vw - 0.8vmin);
         }
     }
     @media screen and (orientation:landscape) {
         #left_div, #right_div {
-            width: calc(50% - 1.5vh);
-            height: calc(100% - 2vh);
+            width: calc(50% - 1.51vmin);
+            height: calc(100% - 2vmin);
         }
 
         #right_div {
@@ -54,14 +56,14 @@ npm run dev -- --host
         }
 
         #history {
-            height: calc(100% - 10vw - 0.8vh);
+            height: calc(100% - 10vw - 0.8vmin);
         }
     }
 
     #input, .list_item {
         width: 100%;
         aspect-ratio: 5 / 1;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         background-color: rgb(255, 255, 255);
     }
 
@@ -83,7 +85,7 @@ npm run dev -- --host
     #input_fields, .list_item_fields {
         float: left;
         height: 100%;
-        width: calc(70% - 2vh);
+        width: calc(70% - 2vmin);
     }
     .input_field, .list_item_field {
         display: block;
@@ -93,111 +95,125 @@ npm run dev -- --host
         width: 100%;
         background-color: unset;
         color: rgb(0, 0, 0);
+        font-size: 3vmin;
     }
     #input_count, .list_item_count {
         float: left;
-        margin-left: 1vh;
-        margin-top: 1vh;
+        margin-left: 1vmin;
+        margin-top: 1vmin;
         border: unset;
         padding: unset;
         width: 10%;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         text-align: center;
-        height: calc(60% - 2vh);
+        height: calc(60% - 2vmin);
         background-color: rgb(220, 220, 220);
         color: rgb(0, 0, 0);
+        font-size: 2vmin;
+        font-weight: bold;
     }
     #input_add, .list_item_delete {
         float: left;
-        margin-left: 1vh;
-        margin-top: 1vh;
+        margin-left: 1vmin;
+        margin-top: 1vmin;
         border: unset;
         padding: unset;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         width: 10%;
-        height: calc(40% - 1vh);
+        height: calc(40% - 1vmin);
         background-color: rgb(220, 220, 220);
         color: rgb(0, 0, 0);
+        font-size: 2vmin;
+        font-weight: bold;
     }
 
     #history {
-        margin-top: 1vh;
-        border-radius: 1vh;
+        margin-top: 1vmin;
+        border-radius: 1vmin;
         background-color: rgb(40, 40, 40, 0.5);
         overflow-y: scroll;
     }
 
     .history_item {
-        margin: 0.5vh;
-        width: calc(100% - 1vh);
+        margin: 0.5vmin;
+        width: calc(100% - 1vmin);
         aspect-ratio: 6 / 1;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         background-color: rgba(255, 255, 255, 0.8);
     }
 
     .history_item_fields {
         float: left;
         height: 100%;
-        width: calc(90% - 2vh);
+        width: calc(90% - 2vmin);
     }
 
     .history_item_field {
         display: block;
         border: unset;
         padding: unset;
-        margin-left: 1vh;
+        margin-left: 1vmin;
         height: 25%;
         width: 100%;
         background-color: unset;
         color: rgb(0, 0, 0);
+        font-size: 3vmin;
     }
 
     .history_item_use {
         float: left;
-        margin-left: 1vh;
-        margin-top: 1vh;
+        margin-left: 1vmin;
+        margin-top: 1vmin;
         border: unset;
         padding: unset;
         width: 10%;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         text-align: center;
-        height: calc(60% - 2vh);
+        height: calc(60% - 2vmin);
         background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
+        font-size: 2vmin;
+        font-weight: bold;
     }
 
     .history_item_delete {
         float: left;
-        margin-left: 1vh;
-        margin-top: 1vh;
+        margin-left: 1vmin;
+        margin-top: 1vmin;
         border: unset;
         padding: unset;
-        border-radius: 1vh;
+        border-radius: 1vmin;
         width: 10%;
-        height: calc(40% - 1vh);
+        height: calc(40% - 1vmin);
         background-color: rgb(200, 200, 200);
         color: rgb(0, 0, 0);
+        font-size: 2vmin;
+        font-weight: bold;
     }
 
     #list {
-        height: calc(80% - 1vh);
-        border-radius: 1vh;
+        height: calc(80% - 1vmin);
+        border-radius: 1vmin;
         background-color: rgb(40, 40, 40, 0.5);
-        margin-bottom: 1vh;
+        margin-bottom: 1vmin;
         overflow-y: scroll;
     }
 
     .list_item {
-        margin: 0.5vh;
-        width: calc(100% - 1vh);
+        margin: 0.5vmin;
+        width: calc(100% - 1vmin);
     }
 
     #output {
         height: calc(20%);
-        border-radius: 1vh;
+        border-radius: 1vmin;
         margin-top: 0;
         background-color: rgb(40, 40, 40, 0.5);
-}
+    }
+
+    .input_field_small, .history_item_field_small, .list_item_field_small {
+        font-size: 2vmin;
+    }
 </style>
 
 <script lang="ts">
@@ -488,8 +504,6 @@ npm run dev -- --host
                 textField4: listEntry[1].field4,
                 textField5: listEntry[1].field5
             }]
-
-
         })
 
 
@@ -513,10 +527,10 @@ npm run dev -- --host
             <input id="input_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="input item thumbnail" on:click={() => editThumbnail()}>
         </div>
         <div id="input_fields">
-            <input id="input_field1" class="input_field input_field_large" placeholder="field1">
-            <input id="input_field2" class="input_field input_field_medium" placeholder="field2">
-            <input id="input_field3" class="input_field input_field_medium" placeholder="field3">
-            <input id="input_field4" class="input_field input_field_medium" placeholder="field4">
+            <input id="input_field1" class="input_field" placeholder="field1">
+            <input id="input_field2" class="input_field" placeholder="field2">
+            <input id="input_field3" class="input_field" placeholder="field3">
+            <input id="input_field4" class="input_field input_field_small" placeholder="field4">
             <input id="input_field5" class="input_field input_field_small" placeholder="field5">
         </div>
         <select id="input_count">
@@ -626,10 +640,10 @@ npm run dev -- --host
         {#each Object.entries($history) as [id, item]}
         <div id={id} class="history_item">
             <div class="history_item_fields">
-                <input id="field1" class="history_item_field history_item_field_large" placeholder="field1" value={$history[id].field1} disabled>
-                <input id="field2" class="history_item_field history_item_field_medium" placeholder="field2" value={$history[id].field2} disabled>
-                <input id="field3" class="history_item_field history_item_field_medium" placeholder="field3" value={$history[id].field3} disabled>
-                <input id="field4" class="history_item_field history_item_field_medium" placeholder="field4" value={$history[id].field4} disabled>
+                <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
+                <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
+                <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
+                <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
             </div>
             <input class="history_item_use" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
             <input class="history_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
@@ -646,10 +660,10 @@ npm run dev -- --host
                 <input id="thumbnail" class="list_item_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="list item thumbnail" on:click={(event) => editItemThumbnail(event.currentTarget)}>
             </div>
             <div class="list_item_fields">
-                <input id="field1" class="list_item_field list_item_field_large" placeholder="field1" bind:value={$list[id].field1}>
-                <input id="field2" class="list_item_field list_item_field_medium" placeholder="field2" bind:value={$list[id].field2}>
-                <input id="field3" class="list_item_field list_item_field_medium" placeholder="field3" bind:value={$list[id].field3}>
-                <input id="field4" class="list_item_field list_item_field_medium" placeholder="field4" bind:value={$list[id].field4}>
+                <input id="field1" class="list_item_field" placeholder="field1" bind:value={$list[id].field1}>
+                <input id="field2" class="list_item_field" placeholder="field2" bind:value={$list[id].field2}>
+                <input id="field3" class="list_item_field" placeholder="field3" bind:value={$list[id].field3}>
+                <input id="field4" class="list_item_field list_item_field_small" placeholder="field4" bind:value={$list[id].field4}>
                 <input id="field5" class="list_item_field list_item_field_small" placeholder="field5" bind:value={$list[id].field5}>
             </div>
             <select id="count" class="list_item_count" bind:value={$list[id].count}>
