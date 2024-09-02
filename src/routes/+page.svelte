@@ -408,6 +408,32 @@ npm run dev -- --host
         console.log("pls fix")
     }
 
+    function handlePaste(event: Event) {
+        let inputEvent = event as InputEvent;
+
+        if (inputEvent.inputType === 'insertFromPaste') {
+            let formattedData: string[] = [];
+            if (inputEvent.data?.includes('	')) {
+                formattedData = inputEvent.data?.split('	');
+            }
+            else if (inputEvent.data?.includes('\n')) {
+                formattedData = inputEvent.data?.split('\n');
+            }
+
+            for (let n = 0; n < 5; n++) {
+                if (!formattedData[n]) {
+                    formattedData[n] = "";
+                } 
+            }
+
+            input_elements.field1.value = formattedData[0];
+            input_elements.field2.value = formattedData[1];
+            input_elements.field3.value = formattedData[2];
+            input_elements.field4.value = formattedData[3];
+            input_elements.field5.value = formattedData[4];
+        }
+    }
+
     const template: Template = {
         basePdf: <BlankPdf> {
             width: 100,
@@ -527,7 +553,7 @@ npm run dev -- --host
             <input id="input_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="input item thumbnail" on:click={() => editThumbnail()}>
         </div>
         <div id="input_fields">
-            <input id="input_field1" class="input_field" placeholder="field1">
+            <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
             <input id="input_field2" class="input_field" placeholder="field2">
             <input id="input_field3" class="input_field" placeholder="field3">
             <input id="input_field4" class="input_field input_field_small" placeholder="field4">
