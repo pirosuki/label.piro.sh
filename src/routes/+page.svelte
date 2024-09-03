@@ -554,6 +554,10 @@ npm run dev -- --host
         const pdfBytes = await pdf.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
 
+        window.location.href = URL.createObjectURL(blob);
+
+        // didn't work because ios :(
+        /*
         const printFrame = document.getElementById('printFrame') as HTMLIFrameElement;
         printFrame.src = URL.createObjectURL(blob);
 
@@ -562,6 +566,8 @@ npm run dev -- --host
             printFrame.focus();
             printFrame.contentWindow?.print();
         }
+
+        */
     }
 </script>
 
@@ -814,4 +820,3 @@ npm run dev -- --host
         <button on:click={() => localStorage.clear()}>clear</button>
     </div>
 </div>
-<iframe id="printFrame" title="iframe used to print" hidden></iframe>
