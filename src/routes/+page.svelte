@@ -545,7 +545,9 @@ npm run dev -- --host
                     page.setRotation(degrees(localStorage.rotation))
                 }
 
-                pdf.addPage(page);
+                for (let n = 0; n < Number(inputsRaw.count); n++) {
+                    pdf.addPage(page);
+                }
             })
         }
 
