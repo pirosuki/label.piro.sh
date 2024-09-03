@@ -310,9 +310,9 @@ npm run dev -- --host
         let input_values_thing = input_values.field1 + input_values.field2 + input_values.field3 + input_values.field4;
         
         // check if already exists in history
-        let history_item_flagged: [string, history_item] | null = null;
-        Object.entries($history).forEach(item => {
-            let history_item_thing = item[1].field1 + item[1].field2 + item[1].field3 + item[1].field4;
+        let history_item_flagged: history_item | null = null;
+        Object.entries($history).forEach(([id, item]) => {
+            let history_item_thing = item.field1 + item.field2 + item.field3 + item.field4;
 
             if (history_item_thing === input_values_thing) { history_item_flagged = item }
         })
@@ -332,11 +332,11 @@ npm run dev -- --host
 
 
         // check if already exists in list
-        let list_item_flagged: [string, list_item] | null = null;
-        Object.entries($list).forEach(thing => {
-            let list_item_thing = thing[1].field1 + thing[1].field2 + thing[1].field3 + thing[1].field4;
+        let list_item_flagged: list_item | null = null;
+        Object.entries($list).forEach(([id, item]) => {
+            let list_item_thing = item.field1 + item.field2 + item.field3 + item.field4;
 
-            if (list_item_thing === input_values_thing) { list_item_flagged = thing }
+            if (list_item_thing === input_values_thing) { list_item_flagged = item }
         })
 
         if (!list_item_flagged) {
@@ -420,9 +420,9 @@ npm run dev -- --host
                 formattedData = inputEvent.data?.split('\n');
             }
 
-            for (let n = 0; n < 5; n++) {
-                if (!formattedData[n]) {
-                    formattedData[n] = "";
+            for (let i = 0; i < 5; i++) {
+                if (!formattedData[i]) {
+                    formattedData[i] = "";
                 } 
             }
 
@@ -519,29 +519,47 @@ npm run dev -- --host
         ]
     }
 
-    function generatePDF() {
-        Object.entries($list).forEach(listEntry => {
+    async function generatePDF() {
+        const pdf = await PDFDocument.create();
+
+        for (let i in Object.entries($list)) {
+            // fix this
+            const inputsRaw = Object.entries($list)[i][1];
+
             const inputs = [{
-                qrcodeField: listEntry[1].qrcode,
-                thumbnailField: listEntry[1].thumbnail,
-                textField1: listEntry[1].field1,
-                textField2: listEntry[1].field2,
-                textField3: listEntry[1].field3,
-                textField4: listEntry[1].field4,
-                textField5: listEntry[1].field5
+                qrcodeField: inputsRaw.qrcode,
+                thumbnailField: inputsRaw.thumbnail,
+                textField1: inputsRaw.field1,
+                textField2: inputsRaw.field2,
+                textField3: inputsRaw.field3,
+                textField4: inputsRaw.field4,
+                textField5: inputsRaw.field5
             }]
-        })
 
+            const itemPdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }});
+            const itemPdfBuffer = await PDFDocument.load(itemPdf.buffer);
+            const itemPdfCopied = await pdf.copyPages(itemPdfBuffer, itemPdfBuffer.getPageIndices());
 
+            itemPdfCopied.forEach(page => {
+                if (localStorage.rotation) {
+                    page.setRotation(degrees(localStorage.rotation))
+                }
 
-        /*
-        generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }}).then(pdf => {
-            const blob = new Blob([pdf.buffer], { type: 'application/pdf' });
+                pdf.addPage(page);
+            })
+        }
 
-            // swap to hidden iframe?
-            window.open(URL.createObjectURL(blob));
-        })
-        */
+        const pdfBytes = await pdf.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+        const printFrame = document.getElementById('printFrame') as HTMLIFrameElement;
+        printFrame.src = URL.createObjectURL(blob);
+
+        // idk why this works but () => doesn't
+        printFrame.onload = function() {
+            printFrame.focus();
+            printFrame.contentWindow?.print();
+        }
     }
 </script>
 
@@ -794,3 +812,4 @@ npm run dev -- --host
         <button on:click={() => localStorage.clear()}>clear</button>
     </div>
 </div>
+<iframe id="printFrame" title="iframe used to print" hidden></iframe>
