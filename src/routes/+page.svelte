@@ -67,21 +67,33 @@ npm run dev -- --host
         background-color: rgb(255, 255, 255);
     }
 
-    #input_thumbs, .list_item_thumbs {
+    #input_thumbnail, .list_item_thumbnail {
         float: left;
         height: 100%;
         width: 20%;
     }
 
-    #input_qrcode, #input_thumbnail, .list_item_qrcode, .list_item_thumbnail {
+    #input_qrcode, #input_logo, .list_item_qrcode, .list_item_logo {
         position: relative;
         height: 80%;
+        width: 80%;
         top: 10%;
         left: 10%;
     }
-    #input_thumbnail, .list_item_thumbnail {
-        display: none;
+
+    #input_logo_image, #input_logo_button {
+        height: 100%;
+        width: 100%;
     }
+
+    #input_logo_button, #input_logo_image {
+        position: absolute;
+    }
+
+    #input_logo_button {
+        opacity: 0;
+    }
+    
     #input_fields, .list_item_fields {
         float: left;
         height: 100%;
@@ -235,8 +247,6 @@ npm run dev -- --host
     const history = writable<history_type>({});
 
     type list_item = {
-        "qrcode": string,
-        "thumbnail": string,
         "field1": string,
         "field2": string,
         "field3": string,
@@ -249,7 +259,7 @@ npm run dev -- --host
 
     type input_elements_type = {
         "qrcode": HTMLInputElement,
-        "thumbnail": HTMLInputElement,
+        "logo": HTMLInputElement,
         "field1": HTMLInputElement,
         "field2": HTMLInputElement,
         "field3": HTMLInputElement,
@@ -260,17 +270,9 @@ npm run dev -- --host
     let input_elements: input_elements_type;
 
     onMount(() => {
-        // restore values from localStorage if exist
-        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
-        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
-        if (localStorage.lastField5) { (document.getElementById('input_field5') as HTMLInputElement).value = localStorage.lastField5; }
-
-        list.subscribe((value) => localStorage.list = JSON.stringify(value));
-        history.subscribe((value) => localStorage.history = JSON.stringify(value));
-
         input_elements = {
             "qrcode": (document.getElementById('input_qrcode') as HTMLInputElement),
-            "thumbnail": (document.getElementById('input_thumbnail') as HTMLInputElement),
+            "logo": (document.getElementById('input_logo') as HTMLInputElement),
             "field1": (document.getElementById('input_field1') as HTMLInputElement),
             "field2": (document.getElementById('input_field2') as HTMLInputElement),
             "field3": (document.getElementById('input_field3') as HTMLInputElement),
@@ -278,22 +280,21 @@ npm run dev -- --host
             "field5": (document.getElementById('input_field5') as HTMLInputElement),
             "count": (document.getElementById('input_count') as HTMLInputElement)
         };
+
+        // restore values from localStorage if exist
+        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
+        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
+        if (localStorage.lastField5) { input_elements.field5.value = localStorage.lastField5; };
+
+        const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
+        if (localStorage.logo && input_logo_image_element) { input_logo_image_element.src = localStorage.logo };
+
+        list.subscribe((value) => localStorage.list = JSON.stringify(value));
+        history.subscribe((value) => localStorage.history = JSON.stringify(value));
     });
 
     function addItem() {
-        let qrcodeValue = "";
-        let thumbnailValue = "";
-
-        if (input_elements.qrcode.style.display !== "none") {
-            qrcodeValue = localStorage.lastQrcode;
-        }
-        else {
-            thumbnailValue = localStorage.lastThumbnail;
-        }
-
         let input_values = {
-            "qrcode": qrcodeValue,
-            "thumbnail": thumbnailValue,
             "field1": (input_elements.field1).value,
             "field2": (input_elements.field2).value,
             "field3": (input_elements.field3).value,
@@ -332,11 +333,11 @@ npm run dev -- --host
 
 
         // check if already exists in list
-        let list_item_flagged: list_item | null = null;
+        let list_item_flagged: [string, list_item] | null = null;
         Object.entries($list).forEach(([id, item]) => {
             let list_item_thing = item.field1 + item.field2 + item.field3 + item.field4;
 
-            if (list_item_thing === input_values_thing) { list_item_flagged = item }
+            if (list_item_thing === input_values_thing) { list_item_flagged = [id, item] }
         })
 
         if (!list_item_flagged) {
@@ -380,32 +381,37 @@ npm run dev -- --host
     }
 
     function editQrcode() {
-        let newQrcode: string | null = prompt("Enter QR Code value", localStorage.lastQrcode);
+        let newQrcode: string | null = prompt("Enter QR Code value", localStorage.qrcode);
     
-        // fix this // refuses to save to localstorage
         if (newQrcode) {
-            localStorage.lastQrcode = newQrcode;
+            localStorage.qrcode = newQrcode;
         }
     }
 
-    function editThumbnail() {
-        // fix this
-        console.log("pls fix")
-    }
+    function editLogo(element: EventTarget & HTMLInputElement) {
+        if (element.files) {
+            let file = element.files[0];
 
-    function editItemQrcode(element: EventTarget & HTMLInputElement) {
-        let listEntryId = element.parentElement?.parentElement?.id;
+            if (file.type === "image/png" || file.type === "image/jpeg") {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    if (reader.result && typeof(reader.result) === 'string') {
+                        const result: string = reader.result;
 
-        let newQrcode: string | null = prompt("Enter QR Code value", $list[listEntryId as string].qrcode);
-    
-        if (newQrcode) {
-            $list[listEntryId as string].qrcode = newQrcode;
+                        const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
+                        input_logo_image_element.src = result;
+
+                        Object.entries(document.getElementsByClassName('list_item_logo')).forEach(([i, element]) => {
+                            (element as HTMLImageElement).src = result;
+                        })
+
+                        localStorage.logo = result;
+                    }
+                }
+
+                reader.readAsDataURL(file);
+            }
         }
-    }
-
-    function editItemThumbnail(element: EventTarget & HTMLInputElement) {
-        // fix this
-        console.log("pls fix")
     }
 
     function handlePaste(event: Event) {
@@ -420,17 +426,36 @@ npm run dev -- --host
                 formattedData = inputEvent.data?.split('\n');
             }
 
-            for (let i = 0; i < 5; i++) {
-                if (!formattedData[i]) {
-                    formattedData[i] = "";
-                } 
+            for (let i in formattedData.slice(0, 5)) {
+                let input_elements_fields = [input_elements.field1, input_elements.field2, input_elements.field3, input_elements.field4, input_elements.field5];
+                input_elements_fields[i].value = formattedData[i];
             }
+        }
+    }
 
-            input_elements.field1.value = formattedData[0];
-            input_elements.field2.value = formattedData[1];
-            input_elements.field3.value = formattedData[2];
-            input_elements.field4.value = formattedData[3];
-            input_elements.field5.value = formattedData[4];
+    function toggleThumbnail() {
+        const qrcode_elements = document.querySelectorAll('#input_qrcode, .list_item_qrcode');
+        const logo_elements = document.querySelectorAll('#input_logo, .list_item_logo');
+
+        if (input_elements.logo.hidden === false) {
+            qrcode_elements.forEach(element => {
+                (element as HTMLDivElement).hidden = false;
+            })
+            logo_elements.forEach(element => {
+                (element as HTMLImageElement).hidden = true;
+            })
+
+            localStorage.using_logo = 0;
+        }
+        else {
+            logo_elements.forEach(element => {
+                (element as HTMLImageElement).hidden = false;
+            })
+            qrcode_elements.forEach(element => {
+                (element as HTMLDivElement).hidden = true;
+            })
+
+            localStorage.using_logo = 1;
         }
     }
 
@@ -451,7 +476,7 @@ npm run dev -- --host
                     width: 16,
                     height: 16
                 },
-                thumbnailField: {
+                logoField: {
                     type: "image",
                     position: {
                         x: 2,
@@ -523,12 +548,25 @@ npm run dev -- --host
         const pdf = await PDFDocument.create();
 
         for (let i in Object.entries($list)) {
-            // fix this
             const inputsRaw = Object.entries($list)[i][1];
 
+            let qrcode = "";
+            let logo = "";
+
+            console.log(input_elements.logo.hidden, localStorage.logo);
+
+            console.log(input_elements.qrcode.hidden, localStorage.qrcode);
+
+            if (!input_elements.logo.hidden && localStorage.logo) {
+                logo = localStorage.logo;
+            }
+            else if (!input_elements.qrcode.hidden && localStorage.qrcode){
+                qrcode = localStorage.qrcode;
+            }
+
             const inputs = [{
-                qrcodeField: inputsRaw.qrcode,
-                thumbnailField: inputsRaw.thumbnail,
+                qrcodeField: qrcode,
+                logoField: logo,
                 textField1: inputsRaw.field1,
                 textField2: inputsRaw.field2,
                 textField3: inputsRaw.field3,
@@ -541,12 +579,12 @@ npm run dev -- --host
             const itemPdfCopied = await pdf.copyPages(itemPdfBuffer, itemPdfBuffer.getPageIndices());
 
             itemPdfCopied.forEach(page => {
-                if (localStorage.rotation) {
-                    page.setRotation(degrees(localStorage.rotation))
+                if (Number(localStorage.rotation)) {
+                    page.setRotation(degrees(Number(localStorage.rotation)))
                 }
 
                 for (let n = 0; n < Number(inputsRaw.count); n++) {
-                    pdf.addPage(page);
+                    pdf.addPage(page);                    
                 }
             })
         }
@@ -574,9 +612,12 @@ npm run dev -- --host
 <div id="background_cover"></div>
 <div id="left_div">
     <div id="input">
-        <div id="input_thumbs">
-            <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input item qrcode" on:click={() => editQrcode()}>
-            <input id="input_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="input item thumbnail" on:click={() => editThumbnail()}>
+        <div id="input_thumbnail">
+            <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
+            <div id="input_logo" hidden>
+                <img id="input_logo_image" alt="input logo">
+                <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+            </div>
         </div>
         <div id="input_fields">
             <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
@@ -586,105 +627,9 @@ npm run dev -- --host
             <input id="input_field5" class="input_field input_field_small" placeholder="field5">
         </div>
         <select id="input_count">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-            <option value="32">32</option>
-            <option value="33">33</option>
-            <option value="34">34</option>
-            <option value="35">35</option>
-            <option value="36">36</option>
-            <option value="37">37</option>
-            <option value="38">38</option>
-            <option value="39">39</option>
-            <option value="40">40</option>
-            <option value="41">41</option>
-            <option value="42">42</option>
-            <option value="43">43</option>
-            <option value="44">44</option>
-            <option value="45">45</option>
-            <option value="46">46</option>
-            <option value="47">47</option>
-            <option value="48">48</option>
-            <option value="49">49</option>
-            <option value="50">50</option>
-            <option value="51">51</option>
-            <option value="52">52</option>
-            <option value="53">53</option>
-            <option value="54">54</option>
-            <option value="55">55</option>
-            <option value="56">56</option>
-            <option value="57">57</option>
-            <option value="58">58</option>
-            <option value="59">59</option>
-            <option value="60">60</option>
-            <option value="61">61</option>
-            <option value="62">62</option>
-            <option value="63">63</option>
-            <option value="64">64</option>
-            <option value="65">65</option>
-            <option value="66">66</option>
-            <option value="67">67</option>
-            <option value="68">68</option>
-            <option value="69">69</option>
-            <option value="70">70</option>
-            <option value="71">71</option>
-            <option value="72">72</option>
-            <option value="73">73</option>
-            <option value="74">74</option>
-            <option value="75">75</option>
-            <option value="76">76</option>
-            <option value="77">77</option>
-            <option value="78">78</option>
-            <option value="79">79</option>
-            <option value="80">80</option>
-            <option value="81">81</option>
-            <option value="82">82</option>
-            <option value="83">83</option>
-            <option value="84">84</option>
-            <option value="85">85</option>
-            <option value="86">86</option>
-            <option value="87">87</option>
-            <option value="88">88</option>
-            <option value="89">89</option>
-            <option value="90">90</option>
-            <option value="91">91</option>
-            <option value="92">92</option>
-            <option value="93">93</option>
-            <option value="94">94</option>
-            <option value="95">95</option>
-            <option value="96">96</option>
-            <option value="97">97</option>
-            <option value="98">98</option>
-            <option value="99">99</option>
+            {#each Array.from(Array(100).keys()).slice(1, 100) as n}
+                <option value="{String(n)}">{n}</option>
+            {/each}
         </select>
         <input id="input_add" type="button" value="add" on:click={() => addItem()}>
     </div>
@@ -707,107 +652,21 @@ npm run dev -- --host
     <div id="list">
         {#each Object.entries($list) as [id, item]}
         <div id={id} class="list_item">
-            <div class="list_item_thumbs">
-                <input id="qrcode" class="list_item_qrcode" type="image" src="./sampleqrcode.svg" alt="list item qrcode" on:click={(event) => editItemQrcode(event.currentTarget)}>
-                <input id="thumbnail" class="list_item_thumbnail" type="image" src="https://piro.sh/fromg.png" alt="list item thumbnail" on:click={(event) => editItemThumbnail(event.currentTarget)}>
+            <div class="list_item_thumbnail">
+                <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode">
+                <img class="list_item_logo" src={localStorage.logo} alt="list item logo" hidden>
             </div>
             <div class="list_item_fields">
-                <input id="field1" class="list_item_field" placeholder="field1" bind:value={$list[id].field1}>
-                <input id="field2" class="list_item_field" placeholder="field2" bind:value={$list[id].field2}>
-                <input id="field3" class="list_item_field" placeholder="field3" bind:value={$list[id].field3}>
-                <input id="field4" class="list_item_field list_item_field_small" placeholder="field4" bind:value={$list[id].field4}>
-                <input id="field5" class="list_item_field list_item_field_small" placeholder="field5" bind:value={$list[id].field5}>
+                <input class="list_item_field" placeholder="field1" bind:value={$list[id].field1}>
+                <input class="list_item_field" placeholder="field2" bind:value={$list[id].field2}>
+                <input class="list_item_field" placeholder="field3" bind:value={$list[id].field3}>
+                <input class="list_item_field list_item_field_small" placeholder="field4" bind:value={$list[id].field4}>
+                <input class="list_item_field list_item_field_small" placeholder="field5" bind:value={$list[id].field5}>
             </div>
             <select id="count" class="list_item_count" bind:value={$list[id].count}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25</option>
-                <option value="26">26</option>
-                <option value="27">27</option>
-                <option value="28">28</option>
-                <option value="29">29</option>
-                <option value="30">30</option>
-                <option value="31">31</option>
-                <option value="32">32</option>
-                <option value="33">33</option>
-                <option value="34">34</option>
-                <option value="35">35</option>
-                <option value="36">36</option>
-                <option value="37">37</option>
-                <option value="38">38</option>
-                <option value="39">39</option>
-                <option value="40">40</option>
-                <option value="41">41</option>
-                <option value="42">42</option>
-                <option value="43">43</option>
-                <option value="54">54</option>
-                <option value="55">55</option>
-                <option value="56">56</option>
-                <option value="57">57</option>
-                <option value="58">58</option>
-                <option value="59">59</option>
-                <option value="60">60</option>
-                <option value="61">61</option>
-                <option value="62">62</option>
-                <option value="63">63</option>
-                <option value="64">64</option>
-                <option value="65">65</option>
-                <option value="66">66</option>
-                <option value="67">67</option>
-                <option value="68">68</option>
-                <option value="69">69</option>
-                <option value="70">70</option>
-                <option value="71">71</option>
-                <option value="72">72</option>
-                <option value="73">73</option>
-                <option value="74">74</option>
-                <option value="75">75</option>
-                <option value="76">76</option>
-                <option value="77">77</option>
-                <option value="78">78</option>
-                <option value="79">79</option>
-                <option value="80">80</option>
-                <option value="81">81</option>
-                <option value="82">82</option>
-                <option value="83">83</option>
-                <option value="84">84</option>
-                <option value="85">85</option>
-                <option value="86">86</option>
-                <option value="87">87</option>
-                <option value="88">88</option>
-                <option value="89">89</option>
-                <option value="90">90</option>
-                <option value="91">91</option>
-                <option value="92">92</option>
-                <option value="93">93</option>
-                <option value="94">94</option>
-                <option value="95">95</option>
-                <option value="96">96</option>
-                <option value="97">97</option>
-                <option value="98">98</option>
-                <option value="99">99</option>
+                {#each Array.from(Array(100).keys()).slice(1, 100) as n}
+                    <option value="{String(n)}">{n}</option>
+                {/each}
             </select>
             <input class="list_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
         </div>
@@ -818,5 +677,17 @@ npm run dev -- --host
         <button on:click={() => console.log(localStorage)}>localStorage</button>
         <button on:click={() => console.log($list)}>$list</button>
         <button on:click={() => localStorage.clear()}>clear</button>
+        <button on:click={() => toggleThumbnail()}>toggle qrcode/logo</button>
+        <div id="option_rotate">
+            <input id='option_rotate_range' type="range" max="270" step="90" on:input={(event) => {
+                let option_rotate_display_element = document.getElementById('option_rotate_display');
+                if (option_rotate_display_element) {
+                    option_rotate_display_element.innerText = event.currentTarget.value;
+                }
+
+                localStorage.rotation = event.currentTarget.value;
+            }}>
+            <div id="option_rotate_display"></div>
+        </div>
     </div>
 </div>
