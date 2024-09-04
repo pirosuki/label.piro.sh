@@ -3,67 +3,139 @@ npm run dev -- --host
 -->
 
 <style>
-    :global(html), :global(body) {
-        margin: unset;
+    * {
+        all: unset;
+        display: block;
+        font-family: "Montserrat";
+        font-size: calc(var(--label_height) * 0.15);
+    }
+
+    :global(html), :global(body) {       
+        margin: unset; 
         width: 100%;
         height: 100%;
-        background-color: black;
         overscroll-behavior: none;
     }
 
     :global(body) {
+        background-color: black;
         background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
         background-size: cover;
         background-position: center;
     }
 
-    #background_cover {
-        position: absolute;
+    /* */
+
+    .hidden {
+        display: none;
+    }
+    
+    .stretch {
         width: 100%;
         height: 100%;
+    }
+
+    .radius_large {
+        border-radius: 1vmin;
+    }
+
+    .radius_medium {
+        border-radius: 0.5vmin;
+    }
+
+    .radius_small {
+        border-radius: 0.25vmin;
+    }
+
+    .margin_large {
+        margin-left: 1vmin;
+        margin-top: 1vmin;
+    }
+
+    .margin_medium {
+        margin-left: 0.8vmin;
+        margin-top: 0.8vmin;
+    }
+
+    .margin_small {
+        margin-left: 0.6vmin;
+        margin-top: 0.6vmin;
+    }
+
+    /* */
+
+    #background_cover {
+        position: fixed;
         background-color: rgba(255, 255, 255, .15);  
-        backdrop-filter: blur(20px);
+        backdrop-filter: blur(4vmin);
     }
 
     #left_div, #right_div {
         float: left;
-        margin: 1vmin;
         opacity: 85%;
     }
 
     @media screen and (orientation:portrait) {
+        :root {
+            --label_height: calc(20 - 2.5vmin * 0.975);
+        }
+
         #left_div, #right_div {
+            width: 100%;
+            height: 50%;
+        }
+
+        #history_div {
+            height: calc(100% - 20vw - 2vmin);
+        }
+
+        #input_div, #history_div, #list_div, #output_div {
             width: calc(100% - 2vmin);
-            height: calc(50% - 1.5vmin);
-        }
-
-        #right_div {
-            margin-top: 0;
-        }
-
-        #history {
-            height: calc(100% - 20vw - 0.8vmin);
         }
     }
     @media screen and (orientation:landscape) {
+        :root {
+            --label_height: calc(10vw - 3.1vmin * 0.975);
+        }
+
         #left_div, #right_div {
-            width: calc(50% - 1.51vmin);
-            height: calc(100% - 2vmin);
+            width: 50%;
+            height: 100%;
         }
 
-        #right_div {
-            margin-left: 0;
+        #history_div {
+            height: calc(100% - 10vw - 3vmin);
         }
 
-        #history {
-            height: calc(100% - 10vw - 0.8vmin);
+        #input_div, #history_div, #list_div, #output_div {
+            width: calc(100% - 1.5vmin);
+        }
+
+        #list_div, #output_div {
+            margin-left: 0.5vmin;
         }
     }
 
-    #input, .list_item {
-        width: 100%;
+    /* Content divs */
+    #input_div, #history_div, #list_div, #output_div {
+        float: left;
+        background-color: rgb(40, 40, 40, 0.5);
+        overflow-y: scroll;
+    }
+    #input_div {
         aspect-ratio: 5 / 1;
-        border-radius: 1vmin;
+    }
+    #list_div {
+        height: calc(80% - 1.5vmin);
+    }
+    #output_div {
+        height: calc(20% - 1.5vmin);
+    }
+    /* */
+
+    #input {
+        width: calc(100% - 1.6vmin);
+        height: calc(100% - 1.6vmin);
         background-color: rgb(255, 255, 255);
     }
 
@@ -81,150 +153,101 @@ npm run dev -- --host
         left: 10%;
     }
 
-    #input_logo_image, #input_logo_button {
-        height: 100%;
-        width: 100%;
-    }
-
-    #input_logo_button, #input_logo_image {
-        position: absolute;
-    }
-
     #input_logo_button {
         opacity: 0;
     }
     
     #input_fields, .list_item_fields {
         float: left;
-        height: 100%;
-        width: calc(70% - 2vmin);
+        padding-top: calc(var(--label_height) * 0.025);
+        height: calc(100% - var(--label_height) * 0.05);
+        width: calc(70% - 0.3vmin);
     }
     .input_field, .list_item_field {
-        display: block;
-        border: unset;
-        padding: unset;
-        height: 20%;
+        height: 21%;
         width: 100%;
-        background-color: unset;
         color: rgb(0, 0, 0);
-        font-size: 3vmin;
+        font-size: calc(var(--label_height) * 0.21);
     }
-    #input_count, .list_item_count {
+
+    .input_field_small, .list_item_field_small {
+        height: 18.5%;
+        font-size: calc(var(--label_height) * 0.185);
+    }
+
+    /* input and list_item buttons */
+    #input_count, .list_item_count, #input_add, .list_item_delete {
         float: left;
-        margin-left: 1vmin;
-        margin-top: 1vmin;
-        border: unset;
-        padding: unset;
-        width: 10%;
-        border-radius: 1vmin;
-        text-align: center;
-        height: calc(60% - 2vmin);
-        background-color: rgb(220, 220, 220);
-        color: rgb(0, 0, 0);
-        font-size: 2vmin;
+        width: calc(10% - 0.9vmin);
+        height: calc(60% - 0.9vmin);
         font-weight: bold;
+        text-align: center;
+        color: rgb(0, 0, 0);
+        background-color: rgb(220, 220, 220);
     }
     #input_add, .list_item_delete {
-        float: left;
-        margin-left: 1vmin;
-        margin-top: 1vmin;
-        border: unset;
-        padding: unset;
-        border-radius: 1vmin;
-        width: 10%;
-        height: calc(40% - 1vmin);
-        background-color: rgb(220, 220, 220);
-        color: rgb(0, 0, 0);
-        font-size: 2vmin;
-        font-weight: bold;
+        height: calc(40% - 0.9vmin);
     }
-
-    #history {
-        margin-top: 1vmin;
-        border-radius: 1vmin;
-        background-color: rgb(40, 40, 40, 0.5);
-        overflow-y: scroll;
-    }
+    /* */
 
     .history_item {
-        margin: 0.5vmin;
-        width: calc(100% - 1vmin);
+        display: block;
+        width: calc(100% - 1.6vmin);
         aspect-ratio: 6 / 1;
-        border-radius: 1vmin;
         background-color: rgba(255, 255, 255, 0.8);
     }
 
     .history_item_fields {
         float: left;
         height: 100%;
-        width: calc(90% - 2vmin);
+        width: calc(90% - 0.3vmin);
     }
 
     .history_item_field {
-        display: block;
-        border: unset;
-        padding: unset;
-        margin-left: 1vmin;
         height: 25%;
         width: 100%;
         background-color: unset;
         color: rgb(0, 0, 0);
-        font-size: 3vmin;
     }
 
-    .history_item_use {
+    /* history_item buttons */
+    .history_item_use, .history_item_delete {
         float: left;
-        margin-left: 1vmin;
-        margin-top: 1vmin;
-        border: unset;
-        padding: unset;
-        width: 10%;
-        border-radius: 1vmin;
+        font-weight: bold;
         text-align: center;
+        color: rgb(0, 0, 0);
+        width: calc(10% - 0.9vmin);
         height: calc(60% - 2vmin);
         background-color: rgb(200, 200, 200);
-        color: rgb(0, 0, 0);
-        font-size: 2vmin;
-        font-weight: bold;
     }
-
     .history_item_delete {
-        float: left;
-        margin-left: 1vmin;
-        margin-top: 1vmin;
-        border: unset;
-        padding: unset;
-        border-radius: 1vmin;
-        width: 10%;
         height: calc(40% - 1vmin);
-        background-color: rgb(200, 200, 200);
-        color: rgb(0, 0, 0);
-        font-size: 2vmin;
-        font-weight: bold;
     }
-
-    #list {
-        height: calc(80% - 1vmin);
-        border-radius: 1vmin;
-        background-color: rgb(40, 40, 40, 0.5);
-        margin-bottom: 1vmin;
-        overflow-y: scroll;
-    }
+    /* */
 
     .list_item {
-        margin: 0.5vmin;
-        width: calc(100% - 1vmin);
+        width: calc(100% - 1.6vmin);
+        aspect-ratio: 5 / 1;
+        background-color: rgb(255, 255, 255);
     }
 
-    #output {
-        height: calc(20%);
-        border-radius: 1vmin;
-        margin-top: 0;
-        background-color: rgb(40, 40, 40, 0.5);
+    #output_main {
+        float: left;
+        height: 100%;
+        width: 20%;
     }
 
-    .input_field_small, .history_item_field_small, .list_item_field_small {
-        font-size: 2vmin;
+    #output_submit, #output_clear_list, #output_options {
+        height: calc(50% - 1.2vmin);
+        width: calc(100% - 1.6vmin);
+        font-weight: bold;
+        text-align: center;
+        background-color: rgb(255, 255, 255);
+    }
+    #output_options {
+        float: right;
+        margin-right: 0.8vmin;
+        width: calc(20% - 1.6vmin);
     }
 </style>
 
@@ -243,7 +266,7 @@ npm run dev -- --host
         "field3": string,
         "field4": string
     };
-    type history_type = {[key: string] : history_item}
+    type history_type = {[key: string]: history_item}
     const history = writable<history_type>({});
 
     type list_item = {
@@ -254,7 +277,7 @@ npm run dev -- --host
         "field5": string,
         "count": string // convert this to int later
     };
-    type list_type = {[key: string] : list_item} // https://blog.logrocket.com/how-to-dynamically-assign-properties-object-typescript/
+    type list_type = {[key: string]: list_item} // https://blog.logrocket.com/how-to-dynamically-assign-properties-object-typescript/
     const list = writable<list_type>({}); // https://dev.to/danawoodman/svelte-quick-tip-connect-a-store-to-local-storage-4idi
 
     type input_elements_type = {
@@ -282,9 +305,14 @@ npm run dev -- --host
         };
 
         // restore values from localStorage if exist
-        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
-        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
-        if (localStorage.lastField5) { input_elements.field5.value = localStorage.lastField5; };
+        if (!localStorage.inputs) { localStorage.inputs = {}; };
+        if (!localStorage.style) { localStorage.style = {}; };
+        if (!localStorage.config) { localStorage.config = {}; };
+
+        if (localStorage.inputs.history) { $history = JSON.parse(localStorage.inputs.history); } else { $history = {}; };
+        if (localStorage.inputs.list) { $list = JSON.parse(localStorage.inputs.list); } else { $list = {}; };
+
+        if (localStorage.inputs.lastField5) { input_elements.field5.value = localStorage.inputs.lastField5; };
 
         const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
         if (localStorage.logo && input_logo_image_element) { input_logo_image_element.src = localStorage.logo };
@@ -330,8 +358,6 @@ npm run dev -- --host
             $history[history_item_id] = input_values_shaved;
         }
         
-
-
         // check if already exists in list
         let list_item_flagged: [string, list_item] | null = null;
         Object.entries($list).forEach(([id, item]) => {
@@ -356,6 +382,11 @@ npm run dev -- --host
                 $list[list_item_flagged[0]].count = (99).toString();
             }
         }
+
+        input_elements.field1.value = "";
+        input_elements.field2.value = "";
+        input_elements.field3.value = "";
+        input_elements.field4.value = "";
     }
 
     function deleteItem(element: EventTarget & HTMLInputElement) {
@@ -391,6 +422,11 @@ npm run dev -- --host
     function editLogo(element: EventTarget & HTMLInputElement) {
         if (element.files) {
             let file = element.files[0];
+            if (file.size > 5000000) {
+                alert("Image too large (>5MB)")
+
+                return;
+            }
 
             if (file.type === "image/png" || file.type === "image/jpeg") {
                 const reader = new FileReader();
@@ -433,29 +469,29 @@ npm run dev -- --host
         }
     }
 
-    function toggleThumbnail() {
+    function useLogo(value: string) {
         const qrcode_elements = document.querySelectorAll('#input_qrcode, .list_item_qrcode');
         const logo_elements = document.querySelectorAll('#input_logo, .list_item_logo');
 
-        if (input_elements.logo.hidden === false) {
-            qrcode_elements.forEach(element => {
-                (element as HTMLDivElement).hidden = false;
-            })
+        if (Number(value)) {
             logo_elements.forEach(element => {
-                (element as HTMLImageElement).hidden = true;
+                (element as HTMLImageElement).classList.remove('hidden');
+            })
+            qrcode_elements.forEach(element => {
+                (element as HTMLDivElement).classList.add('hidden');
             })
 
-            localStorage.using_logo = 0;
+            localStorage.options.using_logo = 1;
         }
         else {
-            logo_elements.forEach(element => {
-                (element as HTMLImageElement).hidden = false;
-            })
             qrcode_elements.forEach(element => {
-                (element as HTMLDivElement).hidden = true;
+                (element as HTMLDivElement).classList.remove('hidden');
+            })
+            logo_elements.forEach(element => {
+                (element as HTMLImageElement).classList.add('hidden');
             })
 
-            localStorage.using_logo = 1;
+            localStorage.options.using_logo = 0;
         }
     }
 
@@ -544,7 +580,7 @@ npm run dev -- --host
         ]
     }
 
-    async function generatePDF() {
+    async function submit() {
         const pdf = await PDFDocument.create();
 
         for (let i in Object.entries($list)) {
@@ -553,14 +589,14 @@ npm run dev -- --host
             let qrcode = "";
             let logo = "";
 
-            console.log(input_elements.logo.hidden, localStorage.logo);
+            console.log(input_elements.logo.classList.contains('hidden'), localStorage.logo);
 
-            console.log(input_elements.qrcode.hidden, localStorage.qrcode);
+            console.log(input_elements.qrcode.classList.contains('hidden'), localStorage.qrcode);
 
-            if (!input_elements.logo.hidden && localStorage.logo) {
+            if (!input_elements.logo.classList.contains('hidden') && localStorage.logo) {
                 logo = localStorage.logo;
             }
-            else if (!input_elements.qrcode.hidden && localStorage.qrcode){
+            else if (!input_elements.qrcode.classList.contains('hidden') && localStorage.qrcode){
                 qrcode = localStorage.qrcode;
             }
 
@@ -608,53 +644,56 @@ npm run dev -- --host
         */
     }
 </script>
-
-<div id="background_cover"></div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<div id="background_cover" class="stretch"></div>
 <div id="left_div">
-    <div id="input">
-        <div id="input_thumbnail">
-            <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
-            <div id="input_logo" hidden>
-                <img id="input_logo_image" alt="input logo">
-                <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+    <div id="input_div" class="content_div radius_large margin_large">
+        <div id="input" class="radius_medium margin_medium">
+            <div id="input_thumbnail">
+                <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
+                <div id="input_logo">
+                    <img id="input_logo_image" class="stretch" alt="input logo">
+                    <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+                </div>
             </div>
+            <div id="input_fields">
+                <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
+                <input id="input_field2" class="input_field" placeholder="field2">
+                <input id="input_field3" class="input_field" placeholder="field3">
+                <input id="input_field4" class="input_field input_field_small" placeholder="field4">
+                <input id="input_field5" class="input_field input_field_small" placeholder="field5">
+            </div>
+            <select id="input_count" class="radius_small margin_small button">
+                {#each Array.from(Array(100).keys()).slice(1, 100) as n}
+                    <option value="{String(n)}">{n}</option>
+                {/each}
+            </select>
+            <input id="input_add" class="radius_small margin_small button" type="button" value="add" on:click={() => addItem()}>
         </div>
-        <div id="input_fields">
-            <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
-            <input id="input_field2" class="input_field" placeholder="field2">
-            <input id="input_field3" class="input_field" placeholder="field3">
-            <input id="input_field4" class="input_field input_field_small" placeholder="field4">
-            <input id="input_field5" class="input_field input_field_small" placeholder="field5">
-        </div>
-        <select id="input_count">
-            {#each Array.from(Array(100).keys()).slice(1, 100) as n}
-                <option value="{String(n)}">{n}</option>
-            {/each}
-        </select>
-        <input id="input_add" type="button" value="add" on:click={() => addItem()}>
     </div>
-    <div id="history">
+    <div id="history_div" class="content_div radius_large margin_large">
         {#each Object.entries($history) as [id, item]}
-        <div id={id} class="history_item">
+        <div id={id} class="history_item radius_medium margin_medium">
             <div class="history_item_fields">
                 <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
                 <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
                 <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
                 <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
             </div>
-            <input class="history_item_use" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
-            <input class="history_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+            <input class="history_item_use radius_small margin_small button margin_small" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
+            <input class="history_item_delete radius_small margin_small button margin_small" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
         </div>
         {/each}
     </div>
 </div>
 <div id="right_div">
-    <div id="list">
+    <div id="list_div" class="content_div radius_large margin_large">
         {#each Object.entries($list) as [id, item]}
-        <div id={id} class="list_item">
+        <div id={id} class="list_item radius_medium margin_medium">
             <div class="list_item_thumbnail">
                 <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode">
-                <img class="list_item_logo" src={localStorage.logo} alt="list item logo" hidden>
+                <img class="list_item_logo" src={localStorage.logo} alt="list item logo" on:load={(event) => { if (!localStorage.config.using_logo) { event.currentTarget.classList.add('hidden'); } }}>
             </div>
             <div class="list_item_fields">
                 <input class="list_item_field" placeholder="field1" bind:value={$list[id].field1}>
@@ -663,31 +702,49 @@ npm run dev -- --host
                 <input class="list_item_field list_item_field_small" placeholder="field4" bind:value={$list[id].field4}>
                 <input class="list_item_field list_item_field_small" placeholder="field5" bind:value={$list[id].field5}>
             </div>
-            <select id="count" class="list_item_count" bind:value={$list[id].count}>
+            <select id="count" class="list_item_count radius_small margin_small button" bind:value={$list[id].count}>
                 {#each Array.from(Array(100).keys()).slice(1, 100) as n}
                     <option value="{String(n)}">{n}</option>
                 {/each}
             </select>
-            <input class="list_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+            <input class="list_item_delete radius_small margin_small button" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
         </div>
         {/each}
     </div>
-    <div id="output">
-        <button on:click={() => generatePDF()}>generatePDF()</button>
-        <button on:click={() => console.log(localStorage)}>localStorage</button>
-        <button on:click={() => console.log($list)}>$list</button>
-        <button on:click={() => localStorage.clear()}>clear</button>
-        <button on:click={() => toggleThumbnail()}>toggle qrcode/logo</button>
-        <div id="option_rotate">
-            <input id='option_rotate_range' type="range" max="270" step="90" on:input={(event) => {
-                let option_rotate_display_element = document.getElementById('option_rotate_display');
-                if (option_rotate_display_element) {
-                    option_rotate_display_element.innerText = event.currentTarget.value;
-                }
-
-                localStorage.rotation = event.currentTarget.value;
-            }}>
-            <div id="option_rotate_display"></div>
+    <div id="output_div" class="content_div radius_large margin_large">
+        <div id="output_main">
+            <input id="output_submit" class="radius_medium margin_medium" type="button" value="Submit!" on:click={() => submit()}>
+            <input id="output_clear_list" class="radius_medium margin_medium" type="button" value="Clear list" on:click={() => submit()}>
+        </div>
+        <input id="output_options" class="radius_medium margin_medium" type="button" value="Options" on:click={() => submit()}>
+        <div id="options_div" class="hidden">
+            <div id="option_thumbnail">
+                <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
+                    let option_rotate_display_element = document.getElementById('option_thumbnail_display');
+                    if (option_rotate_display_element) {
+                        if (event.currentTarget.value === "0") {
+                            option_rotate_display_element.innerText = "qrcode";
+                        }
+                        else {
+                            option_rotate_display_element.innerText = "logo";
+                        }
+    
+                        useLogo(event.currentTarget.value);
+                    }
+                }}>
+                <div id="option_thumbnail_display"></div>
+            </div>
+            <div id="option_rotate">
+                <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
+                    let option_rotate_display_element = document.getElementById('option_rotate_display');
+                    if (option_rotate_display_element) {
+                        option_rotate_display_element.innerText = event.currentTarget.value;
+                    }
+    
+                    localStorage.rotation = event.currentTarget.value;
+                }}>
+                <div id="option_rotate_display"></div>
+            </div>
         </div>
     </div>
 </div>
