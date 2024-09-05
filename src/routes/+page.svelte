@@ -338,8 +338,11 @@ npm run dev -- --host
 
         if ($options.last_field5) { input_elements.field5.value = $options.last_field5; };
 
-        const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
-        if ($options.logo && input_logo_image_element) { input_logo_image_element.src = $options.logo };
+        if ($options.logo) { (document.getElementById('input_logo_image') as HTMLImageElement).src = $options.logo };
+        if ($options.use_logo) {
+            input_elements.qrcode.classList.add('hidden');
+            input_elements.logo.classList.remove('hidden');
+        }
 
         list.subscribe((value) => localStorage.list = JSON.stringify(value));
         history.subscribe((value) => localStorage.history = JSON.stringify(value));
@@ -738,8 +741,8 @@ npm run dev -- --host
         <div id="input_div" class="radius_large margin_large">
             <div id="input" class="radius_medium margin_medium">
                 <div id="input_thumbnail">
-                    <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()} on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
-                    <div id="input_logo" on:load={(event) => { if (!$options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                    <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
+                    <div id="input_logo" class="hidden">
                         <img id="input_logo_image" class="stretch" alt="input logo">
                         <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
                     </div>
@@ -780,7 +783,7 @@ npm run dev -- --host
             <div id={id} class="list_item radius_medium margin_medium">
                 <div class="list_item_thumbnail">
                     <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
-                    <img class="list_item_logo" src={$options.logo} alt="list item logo" on:load={(event) => { if (!$options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                    <img class="list_item_logo hidden" src={$options.logo} alt="list item logo" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.remove('hidden'); } }}>
                 </div>
                 <div class="list_item_fields">
                     <input class="list_item_field" bind:value={$list[id].field1}>
