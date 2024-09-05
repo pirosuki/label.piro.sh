@@ -117,7 +117,7 @@ npm run dev -- --host
     }
 
     /* Content divs */
-    #input_div, #history_div, #list_div, #output_div {
+    #input_div, #history_div, #list_div, #output_div, #options_div {
         float: left;
         background-color: rgb(40, 40, 40, 0.5);
         overflow-y: scroll;
@@ -130,6 +130,10 @@ npm run dev -- --host
     }
     #output_div {
         height: calc(20% - 1.5vmin);
+    }
+    #options_div {
+        width: calc(100% - 2vmin);
+        height: calc(100% - 2vmin);
     }
     /* */
 
@@ -266,8 +270,7 @@ npm run dev -- --host
         "field3": string,
         "field4": string
     };
-    type history_type = {[key: string]: history_item}
-    const history = writable<history_type>({});
+    const history = writable<{[key: string]: history_item}>({});
 
     type list_item = {
         "field1": string,
@@ -277,8 +280,23 @@ npm run dev -- --host
         "field5": string,
         "count": string // convert this to int later
     };
-    type list_type = {[key: string]: list_item} // https://blog.logrocket.com/how-to-dynamically-assign-properties-object-typescript/
-    const list = writable<list_type>({}); // https://dev.to/danawoodman/svelte-quick-tip-connect-a-store-to-local-storage-4idi
+    const list = writable<{[key: string]: list_item}>({});
+
+    type options_type = {
+        "fonts": {[key: string]: { "data": string }},
+        "rotation": number,
+        "qrcode": string,
+        "logo": string,
+        "use_logo": boolean,
+        "last_field5": string,
+    };
+    const options = writable({} as options_type); // magic?
+
+    type style_item = {
+        "font_name": string,
+        "underline": boolean
+    }
+    const style = writable<{[key: string]: style_item}>({});
 
     type input_elements_type = {
         "qrcode": HTMLInputElement,
@@ -305,20 +323,27 @@ npm run dev -- --host
         };
 
         // restore values from localStorage if exist
-        if (!localStorage.inputs) { localStorage.inputs = {}; };
-        if (!localStorage.style) { localStorage.style = {}; };
-        if (!localStorage.config) { localStorage.config = {}; };
+        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
+        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
+        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{}; $options.fonts = {} };
+        if (localStorage.style) { $style = JSON.parse(localStorage.style); } else {
+            $style = {
+                field1: <style_item>{},
+                field2: <style_item>{},
+                field3: <style_item>{},
+                field4: <style_item>{},
+                field5: <style_item>{}
+            };
+        };
 
-        if (localStorage.inputs.history) { $history = JSON.parse(localStorage.inputs.history); } else { $history = {}; };
-        if (localStorage.inputs.list) { $list = JSON.parse(localStorage.inputs.list); } else { $list = {}; };
-
-        if (localStorage.inputs.lastField5) { input_elements.field5.value = localStorage.inputs.lastField5; };
+        if ($options.last_field5) { input_elements.field5.value = $options.last_field5; };
 
         const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
-        if (localStorage.logo && input_logo_image_element) { input_logo_image_element.src = localStorage.logo };
+        if ($options.logo && input_logo_image_element) { input_logo_image_element.src = $options.logo };
 
         list.subscribe((value) => localStorage.list = JSON.stringify(value));
         history.subscribe((value) => localStorage.history = JSON.stringify(value));
+        options.subscribe((value) => localStorage.options = JSON.stringify(value));
     });
 
     function addItem() {
@@ -332,7 +357,7 @@ npm run dev -- --host
         };
 
         if (input_values.field5) {
-            localStorage.lastField5 = input_values.field5;
+            $options.last_field5 = input_values.field5;
         }
 
         // there must be a better way of doing this
@@ -412,10 +437,10 @@ npm run dev -- --host
     }
 
     function editQrcode() {
-        let newQrcode: string | null = prompt("Enter QR Code value", localStorage.qrcode);
+        let newQrcode: string | null = prompt("Enter QR Code value", $options.qrcode);
     
         if (newQrcode) {
-            localStorage.qrcode = newQrcode;
+            $options.qrcode = newQrcode;
         }
     }
 
@@ -441,7 +466,40 @@ npm run dev -- --host
                             (element as HTMLImageElement).src = result;
                         })
 
-                        localStorage.logo = result;
+                        $options.logo = result;
+                    }
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+
+    function uploadFont(element: EventTarget & HTMLInputElement) {
+        if (element.files) {
+            let file = element.files[0];
+            if (file.size > 2000000) {
+                alert("Font too large (>5MB)")
+
+                return;
+            }
+            else if ($options.fonts[file.name]) {
+                return;
+            }
+
+            if (file.type === "font/ttf" || file.type === "image/otf" || file.type === "image/woff") {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    if (reader.result && typeof(reader.result) === 'string') {
+                        const result: string = reader.result;
+
+                        const option_target_select_element = document.getElementById('option_target_select') as HTMLInputElement;
+                        const field_name = option_target_select_element.value;
+
+                        $style[field_name].font_name = file.name;
+
+                        $options.fonts[file.name] = {data: ""};
+                        $options.fonts[file.name].data = result;
                     }
                 }
 
@@ -469,19 +527,17 @@ npm run dev -- --host
         }
     }
 
-    function useLogo(value: string) {
+    function useLogo(value: boolean) {
         const qrcode_elements = document.querySelectorAll('#input_qrcode, .list_item_qrcode');
         const logo_elements = document.querySelectorAll('#input_logo, .list_item_logo');
 
-        if (Number(value)) {
+        if (value) {
             logo_elements.forEach(element => {
                 (element as HTMLImageElement).classList.remove('hidden');
             })
             qrcode_elements.forEach(element => {
                 (element as HTMLDivElement).classList.add('hidden');
             })
-
-            localStorage.options.using_logo = 1;
         }
         else {
             qrcode_elements.forEach(element => {
@@ -490,97 +546,128 @@ npm run dev -- --host
             logo_elements.forEach(element => {
                 (element as HTMLImageElement).classList.add('hidden');
             })
-
-            localStorage.options.using_logo = 0;
         }
-    }
 
-    const template: Template = {
-        basePdf: <BlankPdf> {
-            width: 100,
-            height: 20,
-            padding: [0, 0, 0, 0]
-        },
-        schemas: [
-            {
-                qrcodeField: {
-                    type: "qrcode",
-                    position: {
-                        x: 2,
-                        y: 2
-                    },
-                    width: 16,
-                    height: 16
-                },
-                logoField: {
-                    type: "image",
-                    position: {
-                        x: 2,
-                        y: 2
-                    },
-                    width: 16,
-                    height: 16
-                },
-                textField1: {
-                    type: "text",
-                    position: {
-                        x: 20,
-                        y: 0.5
-                    },
-                    width: 80,
-                    height: 4,
-                    fontSize: 10,
-                    fontName: "field1font"
-                },
-                textField2: {
-                    type: "text",
-                    position: {
-                        x: 20,
-                        y: 4.5
-                    },
-                    width: 80,
-                    height: 4,
-                    fontSize: 8,
-                    fontName: "field2font"
-                },
-                textField3: {
-                    type: "text",
-                    position: {
-                        x: 20,
-                        y: 8.5
-                    },
-                    width: 80,
-                    height: 4,
-                    fontSize: 8,
-                    fontName: "field3font"
-                },
-                textField4: {
-                    type: "text",
-                    position: {
-                        x: 20,
-                        y: 12.5
-                    },
-                    width: 80,
-                    height: 3.5,
-                    fontSize: 6,
-                    fontName: "field4font"
-                },
-                textField5: {
-                    type: "text",
-                    position: {
-                        x: 20,
-                        y: 16
-                    },
-                    width: 80,
-                    height: 3.5,
-                    fontSize: 6,
-                    fontName: "field5font"
-                }
-            }
-        ]
+        $options.use_logo = value;
     }
 
     async function submit() {
+        const template: Template = {
+            basePdf: <BlankPdf> {
+                width: 100,
+                height: 20,
+                padding: [0, 0, 0, 0]
+            },
+            schemas: [
+                {
+                    qrcodeField: {
+                        type: "qrcode",
+                        position: {
+                            x: 2,
+                            y: 2
+                        },
+                        width: 16,
+                        height: 16
+                    },
+                    logoField: {
+                        type: "image",
+                        position: {
+                            x: 2,
+                            y: 2
+                        },
+                        width: 16,
+                        height: 16
+                    },
+                    textField1: {
+                        type: "text",
+                        position: {
+                            x: 20,
+                            y: 0.5
+                        },
+                        width: 80,
+                        height: 3,
+                        fontName: "field1font",
+                        verticalAlignment: "middle",
+                        lineHeight: 0.8,
+                        dynamicFontSize: {
+                            "min": 1,
+                            "max": 100,
+                            "fit": "vertical"
+                        }
+                    },
+                    textField2: {
+                        type: "text",
+                        position: {
+                            x: 20,
+                            y: 4.5
+                        },
+                        width: 80,
+                        height: 3,
+                        fontName: $style.field2.font_name,
+                        verticalAlignment: "middle",
+                        lineHeight: 0.8,
+                        dynamicFontSize: {
+                            "min": 1,
+                            "max": 100,
+                            "fit": "vertical"
+                        }
+                    },
+                    textField3: {
+                        type: "text",
+                        position: {
+                            x: 20,
+                            y: 8.5
+                        },
+                        width: 80,
+                        height: 3,
+                        fontName: $style.field3.font_name,
+                        verticalAlignment: "middle",
+                        lineHeight: 0.8,
+                        dynamicFontSize: {
+                            "min": 1,
+                            "max": 100,
+                            "fit": "vertical"
+                        }
+                    },
+                    textField4: {
+                        type: "text",
+                        position: {
+                            x: 20,
+                            y: 12.5
+                        },
+                        width: 80,
+                        height: 2.5,
+                        fontName: $style.field4.font_name,
+                        verticalAlignment: "middle",
+                        lineHeight: 0.8,
+                        dynamicFontSize: {
+                            "min": 1,
+                            "max": 100,
+                            "fit": "vertical"
+                        }
+                    },
+                    textField5: {
+                        type: "text",
+                        position: {
+                            x: 20,
+                            y: 16
+                        },
+                        width: 80,
+                        height: 2.5,
+                        fontName: $style.field5.font_name,
+                        verticalAlignment: "middle",
+                        lineHeight: 0.8,
+                        dynamicFontSize: {
+                            "min": 1,
+                            "max": 100,
+                            "fit": "vertical"
+                        },
+                        underline: $style.field2.font_name
+                    }
+                }
+            ]
+        }
+
         const pdf = await PDFDocument.create();
 
         for (let i in Object.entries($list)) {
@@ -588,16 +675,13 @@ npm run dev -- --host
 
             let qrcode = "";
             let logo = "";
-
-            console.log(input_elements.logo.classList.contains('hidden'), localStorage.logo);
-
-            console.log(input_elements.qrcode.classList.contains('hidden'), localStorage.qrcode);
-
-            if (!input_elements.logo.classList.contains('hidden') && localStorage.logo) {
-                logo = localStorage.logo;
+            
+            // the second check here might be broken due to options_type possible initializing all properties
+            if (!input_elements.logo.classList.contains('hidden') && $options.logo) {
+                logo = $options.logo;
             }
-            else if (!input_elements.qrcode.classList.contains('hidden') && localStorage.qrcode){
-                qrcode = localStorage.qrcode;
+            else if (!input_elements.qrcode.classList.contains('hidden') && $options.qrcode){
+                qrcode = $options.qrcode;
             }
 
             const inputs = [{
@@ -610,13 +694,15 @@ npm run dev -- --host
                 textField5: inputsRaw.field5
             }]
 
-            const itemPdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }});
+            const fonts = $options.fonts;
+
+            const itemPdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }, options: { fonts } });
             const itemPdfBuffer = await PDFDocument.load(itemPdf.buffer);
             const itemPdfCopied = await pdf.copyPages(itemPdfBuffer, itemPdfBuffer.getPageIndices());
 
             itemPdfCopied.forEach(page => {
-                if (Number(localStorage.rotation)) {
-                    page.setRotation(degrees(Number(localStorage.rotation)))
+                if ($options.rotation) {
+                    page.setRotation(degrees($options.rotation))
                 }
 
                 for (let n = 0; n < Number(inputsRaw.count); n++) {
@@ -646,105 +732,116 @@ npm run dev -- --host
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<div id="background_cover" class="stretch"></div>
-<div id="left_div">
-    <div id="input_div" class="content_div radius_large margin_large">
-        <div id="input" class="radius_medium margin_medium">
-            <div id="input_thumbnail">
-                <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
-                <div id="input_logo">
-                    <img id="input_logo_image" class="stretch" alt="input logo">
-                    <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+<div id="background_cover" class="stretch hidden"></div>
+<div id="main_div" class="stretch">
+    <div id="left_div">
+        <div id="input_div" class="radius_large margin_large">
+            <div id="input" class="radius_medium margin_medium">
+                <div id="input_thumbnail">
+                    <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()} on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                    <div id="input_logo" on:load={(event) => { if (!$options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                        <img id="input_logo_image" class="stretch" alt="input logo">
+                        <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+                    </div>
                 </div>
+                <div id="input_fields">
+                    <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
+                    <input id="input_field2" class="input_field" placeholder="field2">
+                    <input id="input_field3" class="input_field" placeholder="field3">
+                    <input id="input_field4" class="input_field input_field_small" placeholder="field4">
+                    <input id="input_field5" class="input_field input_field_small" placeholder="field5">
+                </div>
+                <select id="input_count" class="radius_small margin_small button">
+                    {#each Array.from(Array(100).keys()).slice(1, 100) as n}
+                        <option value="{String(n)}">{n}</option>
+                    {/each}
+                </select>
+                <input id="input_add" class="radius_small margin_small button" type="button" value="add" on:click={() => addItem()}>
             </div>
-            <div id="input_fields">
-                <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
-                <input id="input_field2" class="input_field" placeholder="field2">
-                <input id="input_field3" class="input_field" placeholder="field3">
-                <input id="input_field4" class="input_field input_field_small" placeholder="field4">
-                <input id="input_field5" class="input_field input_field_small" placeholder="field5">
+        </div>
+        <div id="history_div" class="radius_large margin_large">
+            {#each Object.entries($history) as [id, item]}
+            <div id={id} class="history_item radius_medium margin_medium">
+                <div class="history_item_fields">
+                    <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
+                    <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
+                    <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
+                    <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
+                </div>
+                <input class="history_item_use radius_small margin_small button margin_small" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
+                <input class="history_item_delete radius_small margin_small button margin_small" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
-            <select id="input_count" class="radius_small margin_small button">
-                {#each Array.from(Array(100).keys()).slice(1, 100) as n}
-                    <option value="{String(n)}">{n}</option>
-                {/each}
-            </select>
-            <input id="input_add" class="radius_small margin_small button" type="button" value="add" on:click={() => addItem()}>
+            {/each}
         </div>
     </div>
-    <div id="history_div" class="content_div radius_large margin_large">
-        {#each Object.entries($history) as [id, item]}
-        <div id={id} class="history_item radius_medium margin_medium">
-            <div class="history_item_fields">
-                <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
-                <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
-                <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
-                <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
+    <div id="right_div">
+        <div id="list_div" class="radius_large margin_large">
+            {#each Object.entries($list) as [id, item]}
+            <div id={id} class="list_item radius_medium margin_medium">
+                <div class="list_item_thumbnail">
+                    <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                    <img class="list_item_logo" src={$options.logo} alt="list item logo" on:load={(event) => { if (!$options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                </div>
+                <div class="list_item_fields">
+                    <input class="list_item_field" bind:value={$list[id].field1}>
+                    <input class="list_item_field" bind:value={$list[id].field2}>
+                    <input class="list_item_field" bind:value={$list[id].field3}>
+                    <input class="list_item_field list_item_field_small" bind:value={$list[id].field4}>
+                    <input class="list_item_field list_item_field_small" bind:value={$list[id].field5}>
+                </div>
+                <select id="count" class="list_item_count radius_small margin_small button" bind:value={$list[id].count}>
+                    {#each Array.from(Array(100).keys()).slice(1, 100) as n}
+                        <option value="{String(n)}">{n}</option>
+                    {/each}
+                </select>
+                <input class="list_item_delete radius_small margin_small button" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
-            <input class="history_item_use radius_small margin_small button margin_small" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
-            <input class="history_item_delete radius_small margin_small button margin_small" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+            {/each}
         </div>
-        {/each}
+        <div id="output_div" class="radius_large margin_large">
+            <div id="output_main">
+                <input id="output_submit" class="radius_medium margin_medium" type="button" value="Submit!" on:click={() => submit()}>
+                <input id="output_clear_list" class="radius_medium margin_medium" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
+            </div>
+            <input id="output_options" class="radius_medium margin_medium" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
+        </div>
     </div>
 </div>
-<div id="right_div">
-    <div id="list_div" class="content_div radius_large margin_large">
-        {#each Object.entries($list) as [id, item]}
-        <div id={id} class="list_item radius_medium margin_medium">
-            <div class="list_item_thumbnail">
-                <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode">
-                <img class="list_item_logo" src={localStorage.logo} alt="list item logo" on:load={(event) => { if (!localStorage.config.using_logo) { event.currentTarget.classList.add('hidden'); } }}>
-            </div>
-            <div class="list_item_fields">
-                <input class="list_item_field" placeholder="field1" bind:value={$list[id].field1}>
-                <input class="list_item_field" placeholder="field2" bind:value={$list[id].field2}>
-                <input class="list_item_field" placeholder="field3" bind:value={$list[id].field3}>
-                <input class="list_item_field list_item_field_small" placeholder="field4" bind:value={$list[id].field4}>
-                <input class="list_item_field list_item_field_small" placeholder="field5" bind:value={$list[id].field5}>
-            </div>
-            <select id="count" class="list_item_count radius_small margin_small button" bind:value={$list[id].count}>
-                {#each Array.from(Array(100).keys()).slice(1, 100) as n}
-                    <option value="{String(n)}">{n}</option>
-                {/each}
-            </select>
-            <input class="list_item_delete radius_small margin_small button" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
-        </div>
+<div id="options_div" class="hidden radius_large margin_large">
+    <div id="option_thumbnail">
+        <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
+            let option_rotate_display_element = document.getElementById('option_thumbnail_display');
+            if (option_rotate_display_element) {
+                if (event.currentTarget.value === "0") {
+                    option_rotate_display_element.innerText = "qrcode";
+                }
+                else {
+                    option_rotate_display_element.innerText = "logo";
+                }
+
+                useLogo(Boolean(Number(event.currentTarget.value)));
+            }
+        }}>
+        <div id="option_thumbnail_display"></div>
+    </div>
+    <div id="option_rotate">
+        <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
+            let option_rotate_display_element = document.getElementById('option_rotate_display');
+            if (option_rotate_display_element) {
+                option_rotate_display_element.innerText = event.currentTarget.value;
+            }
+
+            $options.rotation = Number(event.currentTarget.value);
+        }}>
+        <div id="option_rotate_display"></div>
+    </div>
+    <select id="option_target_select" class="radius_small margin_small">
+        {#each ["field1", "field2", "field3", "field4", "field5"] as field}
+            <option value="{field}">{field}</option>
         {/each}
+    </select>
+    <div id="option_font">
+        <input id="option_font_button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
     </div>
-    <div id="output_div" class="content_div radius_large margin_large">
-        <div id="output_main">
-            <input id="output_submit" class="radius_medium margin_medium" type="button" value="Submit!" on:click={() => submit()}>
-            <input id="output_clear_list" class="radius_medium margin_medium" type="button" value="Clear list" on:click={() => submit()}>
-        </div>
-        <input id="output_options" class="radius_medium margin_medium" type="button" value="Options" on:click={() => submit()}>
-        <div id="options_div" class="hidden">
-            <div id="option_thumbnail">
-                <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
-                    let option_rotate_display_element = document.getElementById('option_thumbnail_display');
-                    if (option_rotate_display_element) {
-                        if (event.currentTarget.value === "0") {
-                            option_rotate_display_element.innerText = "qrcode";
-                        }
-                        else {
-                            option_rotate_display_element.innerText = "logo";
-                        }
-    
-                        useLogo(event.currentTarget.value);
-                    }
-                }}>
-                <div id="option_thumbnail_display"></div>
-            </div>
-            <div id="option_rotate">
-                <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
-                    let option_rotate_display_element = document.getElementById('option_rotate_display');
-                    if (option_rotate_display_element) {
-                        option_rotate_display_element.innerText = event.currentTarget.value;
-                    }
-    
-                    localStorage.rotation = event.currentTarget.value;
-                }}>
-                <div id="option_rotate_display"></div>
-            </div>
-        </div>
-    </div>
+    <input id="option_return" class="radius_medium margin_medium" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
 </div>
