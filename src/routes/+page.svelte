@@ -3,6 +3,53 @@ npm run dev -- --host
 -->
 
 <style>
+    /* */
+    .hidden {
+        display: none;
+    }
+    
+    .stretch {
+        width: 100%;
+        height: 100%;
+    }
+
+    .object {
+        margin-left: 0.8vmin;
+        margin-top: 0.8vmin;
+        border-radius: 0.5vmin;
+        background-color: rgb(255, 255, 255, 0.95);
+    }
+
+    .button {
+        float: left;
+        width: calc(10% - 0.9vmin);
+        height: calc(60% - 0.9vmin);
+        margin-left: 0.6vmin;
+        margin-top: 0.6vmin;
+        border-radius: 0.25vmin;
+        font-weight: bold;
+        text-align: center;
+        color: rgb(0, 0, 0);
+        background-color: rgba(220, 220, 220, 0.8);
+    }
+
+    .button:hover {
+        background-color: rgba(230, 230, 230, 0.8);;
+    }
+
+    .button:active {
+        background-color: rgba(210, 210, 210, 0.8);
+    }
+
+    .container {
+        float: left;
+        margin-left: 1vmin;
+        margin-top: 1vmin;
+        border-radius: 1vmin;
+        background-color: rgba(60, 60, 60, 0.8);
+    }
+    /* */
+
     * {
         all: unset;
         display: block;
@@ -22,57 +69,6 @@ npm run dev -- --host
         background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
         background-size: cover;
         background-position: center;
-    }
-
-    /* */
-
-    .hidden {
-        display: none;
-    }
-    
-    .stretch {
-        width: 100%;
-        height: 100%;
-    }
-
-    .radius_large {
-        border-radius: 1vmin;
-    }
-
-    .radius_medium {
-        border-radius: 0.5vmin;
-    }
-
-    .radius_small {
-        border-radius: 0.25vmin;
-    }
-
-    .margin_large {
-        margin-left: 1vmin;
-        margin-top: 1vmin;
-    }
-
-    .margin_medium {
-        margin-left: 0.8vmin;
-        margin-top: 0.8vmin;
-    }
-
-    .margin_small {
-        margin-left: 0.6vmin;
-        margin-top: 0.6vmin;
-    }
-
-    /* */
-
-    #background_cover {
-        position: fixed;
-        background-color: rgba(255, 255, 255, .15);  
-        backdrop-filter: blur(4vmin);
-    }
-
-    #left_div, #right_div {
-        float: left;
-        opacity: 85%;
     }
 
     @media screen and (orientation:portrait) {
@@ -116,39 +112,30 @@ npm run dev -- --host
         }
     }
 
-    /* Content divs */
-    #input_div, #history_div, #list_div, #output_div, #options_div {
-        float: left;
-        background-color: rgb(40, 40, 40, 0.5);
-        overflow-y: scroll;
+    #background_cover {
+        position: fixed;
+        background-color: rgba(255, 255, 255, .15);  
+        backdrop-filter: blur(4vmin);
     }
+
+    #left_div, #right_div {
+        float: left;
+        opacity: 85%;
+    }
+
+    /* input & list */
     #input_div {
         aspect-ratio: 5 / 1;
     }
-    #list_div {
-        height: calc(80% - 1.5vmin);
-    }
-    #output_div {
-        height: calc(20% - 1.5vmin);
-    }
-    #options_div {
-        width: calc(100% - 2vmin);
-        height: calc(100% - 2vmin);
-    }
-    /* */
-
     #input {
         width: calc(100% - 1.6vmin);
         height: calc(100% - 1.6vmin);
-        background-color: rgb(255, 255, 255);
     }
-
     #input_thumbnail, .list_item_thumbnail {
         float: left;
         height: 100%;
         width: 20%;
     }
-
     #input_qrcode, #input_logo, .list_item_qrcode, .list_item_logo {
         position: relative;
         height: 80%;
@@ -156,11 +143,9 @@ npm run dev -- --host
         top: 10%;
         left: 10%;
     }
-
     #input_logo_button {
         opacity: 0;
     }
-    
     #input_fields, .list_item_fields {
         float: left;
         padding-top: calc(var(--label_height) * 0.025);
@@ -170,89 +155,74 @@ npm run dev -- --host
     .input_field, .list_item_field {
         height: 21%;
         width: 100%;
-        color: rgb(0, 0, 0);
         font-size: calc(var(--label_height) * 0.21);
     }
-
     .input_field_small, .list_item_field_small {
         height: 18.5%;
         font-size: calc(var(--label_height) * 0.185);
     }
-
-    /* input and list_item buttons */
-    #input_count, .list_item_count, #input_add, .list_item_delete {
-        float: left;
-        width: calc(10% - 0.9vmin);
-        height: calc(60% - 0.9vmin);
-        font-weight: bold;
-        text-align: center;
-        color: rgb(0, 0, 0);
-        background-color: rgb(220, 220, 220);
-    }
     #input_add, .list_item_delete {
         height: calc(40% - 0.9vmin);
     }
+    .list_item {
+        width: calc(100% - 1.6vmin);
+        aspect-ratio: 5 / 1;
+    }
+    #list_div {
+        height: calc(80% - 1.5vmin);
+        overflow-y: scroll;
+    }
     /* */
 
+    /* history */
+    #history_div {
+        overflow-y: scroll;
+    }
     .history_item {
-        display: block;
         width: calc(100% - 1.6vmin);
         aspect-ratio: 6 / 1;
-        background-color: rgba(255, 255, 255, 0.8);
+        opacity: 0.85;
     }
-
     .history_item_fields {
         float: left;
         height: 100%;
         width: calc(90% - 0.3vmin);
     }
-
     .history_item_field {
         height: 25%;
         width: 100%;
-        background-color: unset;
-        color: rgb(0, 0, 0);
-    }
-
-    /* history_item buttons */
-    .history_item_use, .history_item_delete {
-        float: left;
-        font-weight: bold;
-        text-align: center;
-        color: rgb(0, 0, 0);
-        width: calc(10% - 0.9vmin);
-        height: calc(60% - 2vmin);
-        background-color: rgb(200, 200, 200);
     }
     .history_item_delete {
         height: calc(40% - 1vmin);
     }
     /* */
 
-    .list_item {
-        width: calc(100% - 1.6vmin);
-        aspect-ratio: 5 / 1;
-        background-color: rgb(255, 255, 255);
+    /* output */
+    #output_div {
+        height: calc(20% - 1.5vmin);
     }
-
     #output_main {
         float: left;
         height: 100%;
         width: 20%;
     }
-
     #output_submit, #output_clear_list, #output_options {
         height: calc(50% - 1.2vmin);
         width: calc(100% - 1.6vmin);
-        font-weight: bold;
-        text-align: center;
-        background-color: rgb(255, 255, 255);
     }
     #output_options {
         float: right;
         margin-right: 0.8vmin;
         width: calc(20% - 1.6vmin);
     }
+    /* */
+
+    /* options */
+    #options_div {
+        width: calc(100% - 2vmin);
+        height: calc(100% - 2vmin);
+    }
+    /* */
 </style>
 
 <script lang="ts">
@@ -514,7 +484,7 @@ npm run dev -- --host
 
         if (input_event.inputType === 'insertFromPaste') {
             let data_formatted: string[] = [];
-            
+
             // tab
             if (input_event.data?.includes('	')) {
                 data_formatted = input_event.data?.split('	');
@@ -725,8 +695,8 @@ npm run dev -- --host
 <div id="background_cover" class="stretch hidden"></div>
 <div id="main_div" class="stretch">
     <div id="left_div">
-        <div id="input_div" class="radius_large margin_large">
-            <div id="input" class="radius_medium margin_medium">
+        <div id="input_div" class="container">
+            <div id="input" class="object">
                 <div id="input_thumbnail">
                     <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
                     <div id="input_logo" class="hidden">
@@ -741,33 +711,33 @@ npm run dev -- --host
                     <input id="input_field4" class="input_field input_field_small" placeholder="field4">
                     <input id="input_field5" class="input_field input_field_small" placeholder="field5">
                 </div>
-                <select id="input_count" class="radius_small margin_small button">
+                <select id="input_count" class="button">
                     {#each Array.from(Array(100).keys()).slice(1, 100) as n}
                         <option value="{String(n)}">{n}</option>
                     {/each}
                 </select>
-                <input id="input_add" class="radius_small margin_small button" type="button" value="add" on:click={() => addItem()}>
+                <input id="input_add" class="button" type="button" value="add" on:click={() => addItem()}>
             </div>
         </div>
-        <div id="history_div" class="radius_large margin_large">
+        <div id="history_div" class="container">
             {#each Object.entries($history) as [id, item]}
-            <div id={id} class="history_item radius_medium margin_medium">
+            <div id={id} class="object history_item">
                 <div class="history_item_fields">
                     <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
                     <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
                     <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
                     <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
                 </div>
-                <input class="history_item_use radius_small margin_small button margin_small" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
-                <input class="history_item_delete radius_small margin_small button margin_small" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+                <input class="button history_item_use" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
+                <input class="button history_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
             {/each}
         </div>
     </div>
     <div id="right_div">
-        <div id="list_div" class="radius_large margin_large">
+        <div id="list_div" class="container">
             {#each Object.entries($list) as [id, item]}
-            <div id={id} class="list_item radius_medium margin_medium">
+            <div id={id} class="object list_item">
                 <div class="list_item_thumbnail">
                     <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
                     <img class="list_item_logo hidden" src={$options.logo} alt="list item logo" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.remove('hidden'); } }}>
@@ -779,25 +749,25 @@ npm run dev -- --host
                     <input class="list_item_field list_item_field_small" bind:value={$list[id].field4}>
                     <input class="list_item_field list_item_field_small" bind:value={$list[id].field5}>
                 </div>
-                <select id="count" class="list_item_count radius_small margin_small button" bind:value={$list[id].count}>
+                <select id="count" class="button list_item_count" bind:value={$list[id].count}>
                     {#each Array.from(Array(100).keys()).slice(1, 100) as n}
                         <option value="{String(n)}">{n}</option>
                     {/each}
                 </select>
-                <input class="list_item_delete radius_small margin_small button" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+                <input class="button list_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
             {/each}
         </div>
-        <div id="output_div" class="radius_large margin_large">
+        <div id="output_div" class="container">
             <div id="output_main">
-                <input id="output_submit" class="radius_medium margin_medium" type="button" value="Submit!" on:click={() => submit()}>
-                <input id="output_clear_list" class="radius_medium margin_medium" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
+                <input id="output_submit" class="button" type="button" value="Submit!" on:click={() => submit()}>
+                <input id="output_clear_list" class="button" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
             </div>
-            <input id="output_options" class="radius_medium margin_medium" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
+            <input id="output_options" class="button" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
         </div>
     </div>
 </div>
-<div id="options_div" class="hidden radius_large margin_large">
+<div id="options_div" class="container hidden">
     <div id="option_thumbnail">
         <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
             let option_rotate_display_element = document.getElementById('option_thumbnail_display');
@@ -825,13 +795,13 @@ npm run dev -- --host
         }}>
         <div id="option_rotate_display"></div>
     </div>
-    <select id="option_target_select" class="radius_small margin_small">
+    <select id="option_target_select" class="button">
         {#each ["field1", "field2", "field3", "field4", "field5"] as field}
             <option value="{field}">{field}</option>
         {/each}
     </select>
     <div id="option_font">
-        <input id="option_font_button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
+        <input id="option_font_button" class="button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
     </div>
-    <input id="option_return" class="radius_medium margin_medium" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
+    <input id="option_return" class="button" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
 </div>
