@@ -17,7 +17,7 @@ npm run dev -- --host
         margin-left: 0.8vmin;
         margin-top: 0.8vmin;
         border-radius: 0.5vmin;
-        background-color: rgb(255, 255, 255, 0.95);
+        background-color: rgb(255, 255, 255);
     }
 
     .button {
@@ -46,7 +46,7 @@ npm run dev -- --host
         margin-left: 1vmin;
         margin-top: 1vmin;
         border-radius: 1vmin;
-        background-color: rgba(60, 60, 60, 0.8);
+        background-color: rgba(40, 40, 40, 0.8);
     }
     /* */
 
@@ -81,11 +81,11 @@ npm run dev -- --host
             height: 50%;
         }
 
-        #history_div {
+        #history_container {
             height: calc(100% - 20vw - 2vmin);
         }
 
-        #input_div, #history_div, #list_div, #output_div {
+        #input_container, #history_container, #list_container, #output_container {
             width: calc(100% - 2vmin);
         }
     }
@@ -99,21 +99,21 @@ npm run dev -- --host
             height: 100%;
         }
 
-        #history_div {
+        #history_container {
             height: calc(100% - 10vw - 3vmin);
         }
 
-        #input_div, #history_div, #list_div, #output_div {
+        #input_container, #history_container, #list_container, #output_container {
             width: calc(100% - 1.5vmin);
         }
 
-        #list_div, #output_div {
+        #list_container, #output_container {
             margin-left: 0.5vmin;
         }
     }
 
     #background_cover {
-        position: fixed;
+        position: absolute;
         background-color: rgba(255, 255, 255, .15);  
         backdrop-filter: blur(4vmin);
     }
@@ -124,7 +124,7 @@ npm run dev -- --host
     }
 
     /* input & list */
-    #input_div {
+    #input_container {
         aspect-ratio: 5 / 1;
     }
     #input {
@@ -168,14 +168,14 @@ npm run dev -- --host
         width: calc(100% - 1.6vmin);
         aspect-ratio: 5 / 1;
     }
-    #list_div {
+    #list_container {
         height: calc(80% - 1.5vmin);
         overflow-y: scroll;
     }
     /* */
 
     /* history */
-    #history_div {
+    #history_container {
         overflow-y: scroll;
     }
     .history_item {
@@ -198,7 +198,7 @@ npm run dev -- --host
     /* */
 
     /* output */
-    #output_div {
+    #output_container {
         height: calc(20% - 1.5vmin);
     }
     #output_main {
@@ -218,7 +218,7 @@ npm run dev -- --host
     /* */
 
     /* options */
-    #options_div {
+    #options_container {
         width: calc(100% - 2vmin);
         height: calc(100% - 2vmin);
     }
@@ -692,10 +692,10 @@ npm run dev -- --host
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<div id="background_cover" class="stretch hidden"></div>
 <div id="main_div" class="stretch">
+    <div id="background_cover" class="stretch"></div>
     <div id="left_div">
-        <div id="input_div" class="container">
+        <div id="input_container" class="container">
             <div id="input" class="object">
                 <div id="input_thumbnail">
                     <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
@@ -719,7 +719,7 @@ npm run dev -- --host
                 <input id="input_add" class="button" type="button" value="add" on:click={() => addItem()}>
             </div>
         </div>
-        <div id="history_div" class="container">
+        <div id="history_container" class="container">
             {#each Object.entries($history) as [id, item]}
             <div id={id} class="object history_item">
                 <div class="history_item_fields">
@@ -735,7 +735,7 @@ npm run dev -- --host
         </div>
     </div>
     <div id="right_div">
-        <div id="list_div" class="container">
+        <div id="list_container" class="container">
             {#each Object.entries($list) as [id, item]}
             <div id={id} class="object list_item">
                 <div class="list_item_thumbnail">
@@ -758,8 +758,8 @@ npm run dev -- --host
             </div>
             {/each}
         </div>
-        <div id="output_div" class="container">
-            <div id="output_main">
+        <div id="output_container" class="container">
+            <div id="output_main" class="object">
                 <input id="output_submit" class="button" type="button" value="Submit!" on:click={() => submit()}>
                 <input id="output_clear_list" class="button" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
             </div>
@@ -767,41 +767,43 @@ npm run dev -- --host
         </div>
     </div>
 </div>
-<div id="options_div" class="container hidden">
-    <div id="option_thumbnail">
-        <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
-            let option_rotate_display_element = document.getElementById('option_thumbnail_display');
-            if (option_rotate_display_element) {
-                if (event.currentTarget.value === "0") {
-                    option_rotate_display_element.innerText = "qrcode";
+<div id="options_div" class="stretch hidden">
+    <div id="options_container" class="container">
+        <div id="option_thumbnail">
+            <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
+                let option_rotate_display_element = document.getElementById('option_thumbnail_display');
+                if (option_rotate_display_element) {
+                    if (event.currentTarget.value === "0") {
+                        option_rotate_display_element.innerText = "qrcode";
+                    }
+                    else {
+                        option_rotate_display_element.innerText = "logo";
+                    }
+
+                    useLogo(Boolean(Number(event.currentTarget.value)));
                 }
-                else {
-                    option_rotate_display_element.innerText = "logo";
+            }}>
+            <div id="option_thumbnail_display"></div>
+        </div>
+        <div id="option_rotate">
+            <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
+                let option_rotate_display_element = document.getElementById('option_rotate_display');
+                if (option_rotate_display_element) {
+                    option_rotate_display_element.innerText = event.currentTarget.value;
                 }
 
-                useLogo(Boolean(Number(event.currentTarget.value)));
-            }
-        }}>
-        <div id="option_thumbnail_display"></div>
+                $options.rotation = Number(event.currentTarget.value);
+            }}>
+            <div id="option_rotate_display"></div>
+        </div>
+        <select id="option_target_select" class="button">
+            {#each ["field1", "field2", "field3", "field4", "field5"] as field}
+                <option value="{field}">{field}</option>
+            {/each}
+        </select>
+        <div id="option_font">
+            <input id="option_font_button" class="button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
+        </div>
+        <input id="option_return" class="button" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
     </div>
-    <div id="option_rotate">
-        <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
-            let option_rotate_display_element = document.getElementById('option_rotate_display');
-            if (option_rotate_display_element) {
-                option_rotate_display_element.innerText = event.currentTarget.value;
-            }
-
-            $options.rotation = Number(event.currentTarget.value);
-        }}>
-        <div id="option_rotate_display"></div>
-    </div>
-    <select id="option_target_select" class="button">
-        {#each ["field1", "field2", "field3", "field4", "field5"] as field}
-            <option value="{field}">{field}</option>
-        {/each}
-    </select>
-    <div id="option_font">
-        <input id="option_font_button" class="button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
-    </div>
-    <input id="option_return" class="button" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
 </div>
