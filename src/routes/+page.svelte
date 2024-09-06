@@ -278,7 +278,7 @@ npm run dev -- --host
         "field3": string,
         "field4": string,
         "field5": string,
-        "count": string // convert this to int later
+        "count": string // can't bind to select unless this is a string
     };
     const list = writable<{[key: string]: list_item}>({});
 
@@ -290,7 +290,7 @@ npm run dev -- --host
         "use_logo": boolean,
         "last_field5": string,
     };
-    const options = writable({} as options_type); // magic?
+    const options = writable({} as options_type);
 
     type style_item = {
         "font_name": string,
@@ -347,67 +347,65 @@ npm run dev -- --host
         list.subscribe((value) => localStorage.list = JSON.stringify(value));
         history.subscribe((value) => localStorage.history = JSON.stringify(value));
         options.subscribe((value) => localStorage.options = JSON.stringify(value));
+        style.subscribe((value) => localStorage.style = JSON.stringify(value));
     });
 
     function addItem() {
-        let input_values = {
-            "field1": (input_elements.field1).value,
-            "field2": (input_elements.field2).value,
-            "field3": (input_elements.field3).value,
-            "field4": (input_elements.field4).value,
-            "field5": (input_elements.field5).value,
-            "count": (input_elements.count).value
-        };
-
-        if (input_values.field5) {
-            $options.last_field5 = input_values.field5;
+        if (input_elements.field5.value) {
+            $options.last_field5 = input_elements.field5.value;
         }
 
         // there must be a better way of doing this
-        let input_values_thing = input_values.field1 + input_values.field2 + input_values.field3 + input_values.field4;
+        const input_values_combined = input_elements.field1.value + input_elements.field2.value + input_elements.field3.value + input_elements.field4.value;
         
         // check if already exists in history
         let history_item_flagged: history_item | null = null;
         Object.entries($history).forEach(([id, item]) => {
-            let history_item_thing = item.field1 + item.field2 + item.field3 + item.field4;
+            const history_item_values_combined = item.field1 + item.field2 + item.field3 + item.field4;
 
-            if (history_item_thing === input_values_thing) { history_item_flagged = item }
+            if (history_item_values_combined === input_values_combined) { history_item_flagged = item }
         })
 
         if (!history_item_flagged) {
-            let history_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
+            const history_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
 
-            const input_values_shaved = {
-                "field1": input_values.field1,
-                "field2": input_values.field2,
-                "field3": input_values.field3,
-                "field4": input_values.field4
-            };
-            $history[history_item_id] = input_values_shaved;
+            $history[history_item_id] = {
+                "field1": input_elements.field1.value,
+                "field2": input_elements.field2.value,
+                "field3": input_elements.field3.value,
+                "field4": input_elements.field4.value
+            };;
         }
         
         // check if already exists in list
-        let list_item_flagged: [string, list_item] | null = null;
+        let list_item_flagged: [string, list_item] | undefined;
         Object.entries($list).forEach(([id, item]) => {
-            let list_item_thing = item.field1 + item.field2 + item.field3 + item.field4;
+            const list_item_values_combined = item.field1 + item.field2 + item.field3 + item.field4;
 
-            if (list_item_thing === input_values_thing) { list_item_flagged = [id, item] }
+            if (list_item_values_combined === input_values_combined) { list_item_flagged = [id, item] }
         })
 
         if (!list_item_flagged) {
-            let list_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
+            const list_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
 
-            $list[list_item_id] = input_values;
+            $list[list_item_id] = {
+                "field1": input_elements.field1.value,
+                "field2": input_elements.field2.value,
+                "field3": input_elements.field3.value,
+                "field4": input_elements.field4.value,
+                "field5": input_elements.field5.value,
+                "count": input_elements.count.value
+            };
         }
         else {
-            let counts_combined = Number($list[list_item_flagged[0]].count) + Number(input_values.count);
+            const counts_combined = Number($list[list_item_flagged[0]].count) + Number(input_elements.count.value);
 
             // cap at 99
             if (counts_combined < 100) {
-                $list[list_item_flagged[0]].count = counts_combined.toString();
+                $list[list_item_flagged[0]].count = String(counts_combined);
             }
             else {
-                $list[list_item_flagged[0]].count = (99).toString();
+                $list[list_item_flagged[0]].count = String(99);
             }
         }
 
@@ -426,12 +424,12 @@ npm run dev -- --host
         else if (element.parentElement?.classList.contains('history_item')) {
             delete $history[element.parentElement?.id as string]
 
-            $history = $history; // force refresh
+            $history = $history;
         }
     }
     
     function useHistory(element: EventTarget & HTMLInputElement) {
-        let historyEntry = $history[element.parentElement?.id as string];
+        const historyEntry = $history[element.parentElement?.id as string];
 
         input_elements.field1.value = historyEntry.field1;
         input_elements.field2.value = historyEntry.field2;
@@ -440,7 +438,7 @@ npm run dev -- --host
     }
 
     function editQrcode() {
-        let newQrcode: string | null = prompt("Enter QR Code value", $options.qrcode);
+        const newQrcode: string | null = prompt("Enter QR Code value", $options.qrcode);
     
         if (newQrcode) {
             $options.qrcode = newQrcode;
@@ -449,9 +447,10 @@ npm run dev -- --host
 
     function editLogo(element: EventTarget & HTMLInputElement) {
         if (element.files) {
-            let file = element.files[0];
+            const file = element.files[0];
+
             if (file.size > 5000000) {
-                alert("Image too large (>5MB)")
+                alert("Image too large (>5MB)");
 
                 return;
             }
@@ -462,9 +461,7 @@ npm run dev -- --host
                     if (reader.result && typeof(reader.result) === 'string') {
                         const result: string = reader.result;
 
-                        const input_logo_image_element = document.getElementById('input_logo_image') as HTMLImageElement;
-                        input_logo_image_element.src = result;
-
+                        (document.getElementById('input_logo_image') as HTMLImageElement).src = result;
                         Object.entries(document.getElementsByClassName('list_item_logo')).forEach(([i, element]) => {
                             (element as HTMLImageElement).src = result;
                         })
@@ -480,13 +477,16 @@ npm run dev -- --host
 
     function uploadFont(element: EventTarget & HTMLInputElement) {
         if (element.files) {
-            let file = element.files[0];
+            const file = element.files[0];
+
             if (file.size > 2000000) {
-                alert("Font too large (>5MB)")
+                alert("Font too large (>5MB)");
 
                 return;
             }
             else if ($options.fonts[file.name]) {
+                alert("Font already in list");
+
                 return;
             }
 
@@ -496,12 +496,10 @@ npm run dev -- --host
                     if (reader.result && typeof(reader.result) === 'string') {
                         const result: string = reader.result;
 
-                        const option_target_select_element = document.getElementById('option_target_select') as HTMLInputElement;
-                        const field_name = option_target_select_element.value;
-
+                        const field_name = (document.getElementById('option_target_select') as HTMLInputElement).value;
                         $style[field_name].font_name = file.name;
 
-                        $options.fonts[file.name] = {data: ""};
+                        $options.fonts[file.name] = {data: ""}; // otherwise it'd get mad
                         $options.fonts[file.name].data = result;
                     }
                 }
@@ -512,20 +510,27 @@ npm run dev -- --host
     }
 
     function handlePaste(event: Event) {
-        let inputEvent = event as InputEvent;
+        const input_event = event as InputEvent;
 
-        if (inputEvent.inputType === 'insertFromPaste') {
-            let formattedData: string[] = [];
-            if (inputEvent.data?.includes('	')) {
-                formattedData = inputEvent.data?.split('	');
+        if (input_event.inputType === 'insertFromPaste') {
+            let data_formatted: string[] = [];
+            
+            // tab
+            if (input_event.data?.includes('	')) {
+                data_formatted = input_event.data?.split('	');
             }
-            else if (inputEvent.data?.includes('\n')) {
-                formattedData = inputEvent.data?.split('\n');
+            // four spaces
+            else if (input_event.data?.includes('    ')) {
+                data_formatted = input_event.data?.split('    ');
+            }
+            // new line
+            else if (input_event.data?.includes('\n')) {
+                data_formatted = input_event.data?.split('\n');
             }
 
-            for (let i in formattedData.slice(0, 5)) {
-                let input_elements_fields = [input_elements.field1, input_elements.field2, input_elements.field3, input_elements.field4, input_elements.field5];
-                input_elements_fields[i].value = formattedData[i];
+            for (let i in data_formatted.slice(0, 5)) {
+                const input_elements_fields = [input_elements.field1, input_elements.field2, input_elements.field3, input_elements.field4, input_elements.field5];
+                input_elements_fields[i].value = data_formatted[i];
             }
         }
     }
@@ -590,13 +595,13 @@ npm run dev -- --host
                         width: 80,
                         height: 3,
                         fontName: "field1font",
-                        verticalAlignment: "middle",
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
                             "max": 100,
                             "fit": "vertical"
-                        }
+                        },
+                        underline: $style.field1.underline
                     },
                     textField2: {
                         type: "text",
@@ -607,13 +612,13 @@ npm run dev -- --host
                         width: 80,
                         height: 3,
                         fontName: $style.field2.font_name,
-                        verticalAlignment: "middle",
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
                             "max": 100,
                             "fit": "vertical"
-                        }
+                        },
+                        underline: $style.field2.underline
                     },
                     textField3: {
                         type: "text",
@@ -624,13 +629,13 @@ npm run dev -- --host
                         width: 80,
                         height: 3,
                         fontName: $style.field3.font_name,
-                        verticalAlignment: "middle",
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
                             "max": 100,
                             "fit": "vertical"
-                        }
+                        },
+                        underline: $style.field3.underline
                     },
                     textField4: {
                         type: "text",
@@ -641,13 +646,13 @@ npm run dev -- --host
                         width: 80,
                         height: 2.5,
                         fontName: $style.field4.font_name,
-                        verticalAlignment: "middle",
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
                             "max": 100,
                             "fit": "vertical"
-                        }
+                        },
+                        underline: $style.field4.underline
                     },
                     textField5: {
                         type: "text",
@@ -658,14 +663,13 @@ npm run dev -- --host
                         width: 80,
                         height: 2.5,
                         fontName: $style.field5.font_name,
-                        verticalAlignment: "middle",
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
                             "max": 100,
                             "fit": "vertical"
                         },
-                        underline: $style.field2.font_name
+                        underline: $style.field5.underline
                     }
                 }
             ]
@@ -674,12 +678,9 @@ npm run dev -- --host
         const pdf = await PDFDocument.create();
 
         for (let i in Object.entries($list)) {
-            const inputsRaw = Object.entries($list)[i][1];
-
             let qrcode = "";
             let logo = "";
             
-            // the second check here might be broken due to options_type possible initializing all properties
             if (!input_elements.logo.classList.contains('hidden') && $options.logo) {
                 logo = $options.logo;
             }
@@ -687,50 +688,36 @@ npm run dev -- --host
                 qrcode = $options.qrcode;
             }
 
+            const inputs_raw = Object.entries($list)[i][1];
             const inputs = [{
                 qrcodeField: qrcode,
                 logoField: logo,
-                textField1: inputsRaw.field1,
-                textField2: inputsRaw.field2,
-                textField3: inputsRaw.field3,
-                textField4: inputsRaw.field4,
-                textField5: inputsRaw.field5
+                textField1: inputs_raw.field1,
+                textField2: inputs_raw.field2,
+                textField3: inputs_raw.field3,
+                textField4: inputs_raw.field4,
+                textField5: inputs_raw.field5
             }]
 
             const fonts = $options.fonts;
 
-            const itemPdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }, options: { fonts } });
-            const itemPdfBuffer = await PDFDocument.load(itemPdf.buffer);
-            const itemPdfCopied = await pdf.copyPages(itemPdfBuffer, itemPdfBuffer.getPageIndices());
+            const item_pdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }, options: { fonts } });
+            const item_pdf_buffer = await PDFDocument.load(item_pdf.buffer);
+            const item_pdf_page = (await pdf.copyPages(item_pdf_buffer, [0]))[0]; // this might break // const item_pdf_copied = await pdf.copyPages(item_pdf_buffer, [item_pdf_buffer.getPageIndices()]);
 
-            itemPdfCopied.forEach(page => {
-                if ($options.rotation) {
-                    page.setRotation(degrees($options.rotation))
-                }
+            if ($options.rotation) {
+                item_pdf_page.setRotation(degrees($options.rotation))
+            }
 
-                for (let n = 0; n < Number(inputsRaw.count); n++) {
-                    pdf.addPage(page);                    
-                }
-            })
+            for (let n = 0; n < Number(inputs_raw.count); n++) {
+                pdf.addPage(item_pdf_page);
+            }
         }
 
-        const pdfBytes = await pdf.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const pdf_buffer = await pdf.save();
+        const blob = new Blob([pdf_buffer], { type: 'application/pdf' });
 
         window.location.href = URL.createObjectURL(blob);
-
-        // didn't work because ios :(
-        /*
-        const printFrame = document.getElementById('printFrame') as HTMLIFrameElement;
-        printFrame.src = URL.createObjectURL(blob);
-
-        // idk why this works but () => doesn't
-        printFrame.onload = function() {
-            printFrame.focus();
-            printFrame.contentWindow?.print();
-        }
-
-        */
     }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
