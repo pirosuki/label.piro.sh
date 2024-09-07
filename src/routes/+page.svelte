@@ -148,8 +148,6 @@ npm run dev -- --host
         padding-top: calc(var(--label_height) * 0.025);
         height: calc(100% - var(--label_height) * 0.05);
         width: calc(70% - 0.3vmin);
-
-        background-color: aqua;
     }
     .input_field, .list_item_field {
         height: 21%;
