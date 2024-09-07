@@ -3,6 +3,27 @@ npm run dev -- --host
 -->
 
 <style>
+    * {
+        all: unset;
+        display: block;
+        font-family: "Montserrat";
+        font-size: calc(var(--label_height) * 0.1);
+    }
+
+    :global(html), :global(body) {       
+        margin: unset; 
+        width: 100%;
+        height: 100%;
+        overscroll-behavior: none;
+    }
+
+    :global(body) {
+        background-color: black;
+        background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
+        background-size: cover;
+        background-position: center;
+    }
+
     /* */
     .hidden {
         display: none;
@@ -47,30 +68,9 @@ npm run dev -- --host
     }
     /* */
 
-    * {
-        all: unset;
-        display: block;
-        font-family: "Montserrat";
-        font-size: calc(var(--label_height) * 0.15);
-    }
-
-    :global(html), :global(body) {       
-        margin: unset; 
-        width: 100%;
-        height: 100%;
-        overscroll-behavior: none;
-    }
-
-    :global(body) {
-        background-color: black;
-        background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
-        background-size: cover;
-        background-position: center;
-    }
-
     @media screen and (orientation:portrait) {
         :root {
-            --label_height: calc(20 - 2.5vmin * 0.975);
+            --label_height: calc(20vw - 2.5vmin * 0.975);
         }
 
         #left_div, #right_div {
@@ -148,6 +148,8 @@ npm run dev -- --host
         padding-top: calc(var(--label_height) * 0.025);
         height: calc(100% - var(--label_height) * 0.05);
         width: calc(70% - 0.3vmin);
+
+        background-color: aqua;
     }
     .input_field, .list_item_field {
         height: 21%;
