@@ -21,9 +21,6 @@ npm run dev -- --host
     }
 
     .button {
-        float: left;
-        width: calc(10% - 0.9vmin);
-        height: calc(60% - 0.9vmin);
         margin-left: 0.6vmin;
         margin-top: 0.6vmin;
         border-radius: 0.25vmin;
@@ -161,6 +158,11 @@ npm run dev -- --host
         height: 18.5%;
         font-size: calc(var(--label_height) * 0.185);
     }
+    #input_count, #input_add, .list_item_count, .list_item_delete {
+        float: left;
+        width: calc(10% - 0.9vmin);
+        height: calc(60% - 0.9vmin);
+    }
     #input_add, .list_item_delete {
         height: calc(40% - 0.9vmin);
     }
@@ -192,6 +194,11 @@ npm run dev -- --host
         height: 25%;
         width: 100%;
     }
+    .history_item_use, .history_item_delete {
+        float: left;
+        width: calc(10% - 0.9vmin);
+        height: calc(60% - 0.9vmin);
+    }
     .history_item_delete {
         height: calc(40% - 1vmin);
     }
@@ -201,14 +208,17 @@ npm run dev -- --host
     #output_container {
         height: calc(20% - 1.5vmin);
     }
-    #output_main {
+    #output_main, #output_other {
         float: left;
-        height: 100%;
-        width: 20%;
+        height: calc(100% - 1.6vmin);
+        width: calc(20% - 0.9vmin);
+    }
+    #output_other {
+        width: calc(80% - 0.9vmin);
     }
     #output_submit, #output_clear_list, #output_options {
-        height: calc(50% - 1.2vmin);
-        width: calc(100% - 1.6vmin);
+        height: calc(50% - 1vmin);
+        width: calc(100% - 1.2vmin);
     }
     #output_options {
         float: right;
@@ -763,7 +773,9 @@ npm run dev -- --host
                 <input id="output_submit" class="button" type="button" value="Submit!" on:click={() => submit()}>
                 <input id="output_clear_list" class="button" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
             </div>
-            <input id="output_options" class="button" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
+            <div id="output_other" class="object">
+                <input id="output_options" class="button" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
+            </div>
         </div>
     </div>
 </div>
