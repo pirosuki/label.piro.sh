@@ -6,7 +6,7 @@ npm run dev -- --host
     * {
         all: unset;
         display: block;
-        font-family: "Montserrat";
+        font-family: sans-serif;
         font-size: calc(var(--label_height) * 0.1);
     }
 
@@ -241,7 +241,7 @@ npm run dev -- --host
 
     import { PDFDocument, degrees } from '@pdfme/pdf-lib';
     import { generate } from '@pdfme/generator';
-    import type { BlankPdf, Template } from '@pdfme/common';
+    import type { BlankPdf, Template, Font } from '@pdfme/common';
     import { text, barcodes, image } from '@pdfme/schemas';
 
     type history_item = {
@@ -263,7 +263,6 @@ npm run dev -- --host
     const list = writable<{[key: string]: list_item}>({});
 
     type options_type = {
-        "fonts": {[key: string]: { "data": string }},
         "rotation": number,
         "qrcode": string,
         "logo": string,
@@ -271,6 +270,8 @@ npm run dev -- --host
         "last_field5": string,
     };
     const options = writable({} as options_type);
+    
+    const fonts = writable<{[key: string]: { "data": string, "fallback": boolean }}>({});
 
     type style_item = {
         "font_name": string,
@@ -291,6 +292,43 @@ npm run dev -- --host
     let input_elements: input_elements_type;
 
     onMount(() => {
+        // restore values from localStorage if exist
+        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
+        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
+        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{} };
+        if (localStorage.fonts) { $fonts = JSON.parse(localStorage.fonts); } else {
+            fetch('./Montserrat-Regular.ttf').then((response) => response.blob().then((blob) => {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    if (reader.result && typeof(reader.result) === 'string') {
+                        $fonts = {
+                            'Montserrat': {
+                                'data': reader.result,
+                                'fallback': true
+                            }
+                        }
+                    }
+                }
+
+                reader.readAsDataURL(blob);
+            }))
+        };
+        if (localStorage.style) { $style = JSON.parse(localStorage.style); } else {
+            $style = {
+                field1: <style_item>{},
+                field2: <style_item>{},
+                field3: <style_item>{},
+                field4: <style_item>{},
+                field5: <style_item>{}
+            };
+        };
+
+        list.subscribe((value) => localStorage.list = JSON.stringify(value));
+        history.subscribe((value) => localStorage.history = JSON.stringify(value));
+        options.subscribe((value) => localStorage.options = JSON.stringify(value));
+        fonts.subscribe((value) => localStorage.fonts = JSON.stringify(value));
+        style.subscribe((value) => localStorage.style = JSON.stringify(value));
+
         input_elements = {
             "qrcode": (document.getElementById('input_qrcode') as HTMLInputElement),
             "logo": (document.getElementById('input_logo') as HTMLInputElement),
@@ -302,20 +340,6 @@ npm run dev -- --host
             "count": (document.getElementById('input_count') as HTMLInputElement)
         };
 
-        // restore values from localStorage if exist
-        if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
-        if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
-        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{}; $options.fonts = {} };
-        if (localStorage.style) { $style = JSON.parse(localStorage.style); } else {
-            $style = {
-                field1: <style_item>{},
-                field2: <style_item>{},
-                field3: <style_item>{},
-                field4: <style_item>{},
-                field5: <style_item>{}
-            };
-        };
-
         if ($options.last_field5) { input_elements.field5.value = $options.last_field5; };
 
         if ($options.logo) { (document.getElementById('input_logo_image') as HTMLImageElement).src = $options.logo };
@@ -323,11 +347,6 @@ npm run dev -- --host
             input_elements.qrcode.classList.add('hidden');
             input_elements.logo.classList.remove('hidden');
         }
-
-        list.subscribe((value) => localStorage.list = JSON.stringify(value));
-        history.subscribe((value) => localStorage.history = JSON.stringify(value));
-        options.subscribe((value) => localStorage.options = JSON.stringify(value));
-        style.subscribe((value) => localStorage.style = JSON.stringify(value));
     });
 
     function addItem() {
@@ -464,23 +483,27 @@ npm run dev -- --host
 
                 return;
             }
-            else if ($options.fonts[file.name]) {
+            else if ($fonts[file.name]) {
                 alert("Font already in list");
 
                 return;
             }
 
-            if (file.type === "font/ttf" || file.type === "image/otf" || file.type === "image/woff") {
+            if (['.ttf', '.otf', '.woff', '.woff2'].includes(file.name.slice(file.name.lastIndexOf('.'), file.name.length))) {
                 const reader = new FileReader();
                 reader.onload = function() {
                     if (reader.result && typeof(reader.result) === 'string') {
                         const result: string = reader.result;
 
+                        console.log(reader.result);
+
                         const field_name = (document.getElementById('option_target_select') as HTMLInputElement).value;
                         $style[field_name].font_name = file.name;
 
-                        $options.fonts[file.name] = {data: ""}; // otherwise it'd get mad
-                        $options.fonts[file.name].data = result;
+                        $fonts[file.name] = {
+                            "data": result,
+                            "fallback": false
+                        };
                     }
                 }
 
@@ -574,7 +597,7 @@ npm run dev -- --host
                         },
                         width: 80,
                         height: 3,
-                        fontName: "field1font",
+                        fontName: $style.field1.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
                             "min": 1,
@@ -679,11 +702,9 @@ npm run dev -- --host
                 textField5: inputs_raw.field5
             }]
 
-            const fonts = $options.fonts;
-
-            const item_pdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }, options: { fonts } });
+            const item_pdf = await generate({template, inputs, plugins: { text, qrcode: barcodes.qrcode, image }, options: { font: $fonts } });
             const item_pdf_buffer = await PDFDocument.load(item_pdf.buffer);
-            const item_pdf_page = (await pdf.copyPages(item_pdf_buffer, [0]))[0]; // this might break // const item_pdf_copied = await pdf.copyPages(item_pdf_buffer, [item_pdf_buffer.getPageIndices()]);
+            const item_pdf_page = (await pdf.copyPages(item_pdf_buffer, [0]))[0];
 
             if ($options.rotation) {
                 item_pdf_page.setRotation(degrees($options.rotation))
@@ -814,6 +835,11 @@ npm run dev -- --host
             {/each}
         </select>
         <div id="option_font">
+            <select id="option_target_select" class="button">
+                {#each Object.entries($fonts) as [name, data]}
+                    <option value="{name}">{name}</option>
+                {/each}
+            </select>
             <input id="option_font_button" class="button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
         </div>
         <input id="option_return" class="button" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
