@@ -522,10 +522,6 @@ npm run dev -- --host
             if (input_event.data?.includes('	')) {
                 data_formatted = input_event.data?.split('	');
             }
-            // four spaces
-            else if (input_event.data?.includes('    ')) {
-                data_formatted = input_event.data?.split('    ');
-            }
             // new line
             else if (input_event.data?.includes('\n')) {
                 data_formatted = input_event.data?.split('\n');
@@ -835,7 +831,7 @@ npm run dev -- --host
             {/each}
         </select>
         <div id="option_font">
-            <select id="option_target_select" class="button">
+            <select id="option_font" class="button">
                 {#each Object.entries($fonts) as [name, data]}
                     <option value="{name}">{name}</option>
                 {/each}
