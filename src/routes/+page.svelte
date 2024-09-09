@@ -518,18 +518,21 @@ npm run dev -- --host
         if (input_event.inputType === 'insertFromPaste') {
             let data_formatted: string[] = [];
 
-            // tab
-            if (input_event.data?.includes('	')) {
-                data_formatted = input_event.data?.split('	');
-            }
             // new line
-            else if (input_event.data?.includes('\n')) {
+            if (input_event.data?.includes('\n')) {
                 data_formatted = input_event.data?.split('\n');
             }
+            // tab
+            else if (input_event.data?.includes('	')) {
+                data_formatted = input_event.data?.split('	');
+            }
+            
 
             for (let i in data_formatted.slice(0, 5)) {
                 const input_elements_fields = [input_elements.field1, input_elements.field2, input_elements.field3, input_elements.field4, input_elements.field5];
-                input_elements_fields[i].value = data_formatted[i];
+                if (data_formatted[i]) {
+                    input_elements_fields[i].value = data_formatted[i];
+                }
             }
         }
     }
