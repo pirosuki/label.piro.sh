@@ -19,7 +19,7 @@ npm run dev -- --host
 
     :global(body) {
         background-color: black;
-        background-image: url("https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w");
+        background-image: url('https://th.bing.com/th/id/R.c10e4787b6b971e9484f41f973337502?rik=np1%2bGEwnkeTk1w');
         background-size: cover;
         background-position: center;
     }
@@ -235,7 +235,7 @@ npm run dev -- --host
     /* */
 </style>
 
-<script lang="ts">
+<script lang='ts'>
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
 
@@ -245,49 +245,49 @@ npm run dev -- --host
     import { text, barcodes, image } from '@pdfme/schemas';
 
     type history_item = {
-        "field1": string,
-        "field2": string,
-        "field3": string,
-        "field4": string
+        'field1': string,
+        'field2': string,
+        'field3': string,
+        'field4': string
     };
     const history = writable<{[key: string]: history_item}>({});
 
     type list_item = {
-        "field1": string,
-        "field2": string,
-        "field3": string,
-        "field4": string,
-        "field5": string,
-        "count": string // can't bind to select unless this is a string
+        'field1': string,
+        'field2': string,
+        'field3': string,
+        'field4': string,
+        'field5': string,
+        'count': string // can't bind to select unless this is a string
     };
     const list = writable<{[key: string]: list_item}>({});
 
     type options_type = {
-        "rotation": number,
-        "qrcode": string,
-        "logo": string,
-        "use_logo": boolean,
-        "last_field5": string,
+        'rotation': number,
+        'qrcode': string,
+        'logo': string,
+        'use_logo': boolean,
+        'last_field5': string,
     };
     const options = writable({} as options_type);
     
-    const fonts = writable<{[key: string]: { "data": string, "fallback": boolean }}>({});
+    const fonts = writable<{[key: string]: { 'data': string, 'fallback': boolean }}>({});
 
     type style_item = {
-        "font_name": string,
-        "underline": boolean
+        'font_name': string,
+        'underline': boolean
     }
     const style = writable<{[key: string]: style_item}>({});
 
     type input_elements_type = {
-        "qrcode": HTMLInputElement,
-        "logo": HTMLInputElement,
-        "field1": HTMLInputElement,
-        "field2": HTMLInputElement,
-        "field3": HTMLInputElement,
-        "field4": HTMLInputElement,
-        "field5": HTMLInputElement,
-        "count": HTMLInputElement
+        'qrcode': HTMLInputElement,
+        'logo': HTMLInputElement,
+        'field1': HTMLInputElement,
+        'field2': HTMLInputElement,
+        'field3': HTMLInputElement,
+        'field4': HTMLInputElement,
+        'field5': HTMLInputElement,
+        'count': HTMLInputElement
     };
     let input_elements: input_elements_type;
 
@@ -330,14 +330,14 @@ npm run dev -- --host
         style.subscribe((value) => localStorage.style = JSON.stringify(value));
 
         input_elements = {
-            "qrcode": (document.getElementById('input_qrcode') as HTMLInputElement),
-            "logo": (document.getElementById('input_logo') as HTMLInputElement),
-            "field1": (document.getElementById('input_field1') as HTMLInputElement),
-            "field2": (document.getElementById('input_field2') as HTMLInputElement),
-            "field3": (document.getElementById('input_field3') as HTMLInputElement),
-            "field4": (document.getElementById('input_field4') as HTMLInputElement),
-            "field5": (document.getElementById('input_field5') as HTMLInputElement),
-            "count": (document.getElementById('input_count') as HTMLInputElement)
+            'qrcode': (document.getElementById('input_qrcode') as HTMLInputElement),
+            'logo': (document.getElementById('input_logo') as HTMLInputElement),
+            'field1': (document.getElementById('input_field1') as HTMLInputElement),
+            'field2': (document.getElementById('input_field2') as HTMLInputElement),
+            'field3': (document.getElementById('input_field3') as HTMLInputElement),
+            'field4': (document.getElementById('input_field4') as HTMLInputElement),
+            'field5': (document.getElementById('input_field5') as HTMLInputElement),
+            'count': (document.getElementById('input_count') as HTMLInputElement)
         };
 
         if ($options.last_field5) { input_elements.field5.value = $options.last_field5; };
@@ -369,10 +369,10 @@ npm run dev -- --host
             const history_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
 
             $history[history_item_id] = {
-                "field1": input_elements.field1.value,
-                "field2": input_elements.field2.value,
-                "field3": input_elements.field3.value,
-                "field4": input_elements.field4.value
+                'field1': input_elements.field1.value,
+                'field2': input_elements.field2.value,
+                'field3': input_elements.field3.value,
+                'field4': input_elements.field4.value
             };;
         }
         
@@ -388,12 +388,12 @@ npm run dev -- --host
             const list_item_id = Math.random().toString(16).substring(2, 16); // https://dev.to/oyetoket/fastest-way-to-generate-random-strings-in-javascript-2k5a
 
             $list[list_item_id] = {
-                "field1": input_elements.field1.value,
-                "field2": input_elements.field2.value,
-                "field3": input_elements.field3.value,
-                "field4": input_elements.field4.value,
-                "field5": input_elements.field5.value,
-                "count": input_elements.count.value
+                'field1': input_elements.field1.value,
+                'field2': input_elements.field2.value,
+                'field3': input_elements.field3.value,
+                'field4': input_elements.field4.value,
+                'field5': input_elements.field5.value,
+                'count': input_elements.count.value
             };
         }
         else {
@@ -408,10 +408,10 @@ npm run dev -- --host
             }
         }
 
-        input_elements.field1.value = "";
-        input_elements.field2.value = "";
-        input_elements.field3.value = "";
-        input_elements.field4.value = "";
+        input_elements.field1.value = '';
+        input_elements.field2.value = '';
+        input_elements.field3.value = '';
+        input_elements.field4.value = '';
     }
 
     function deleteItem(element: EventTarget & HTMLInputElement) {
@@ -437,7 +437,7 @@ npm run dev -- --host
     }
 
     function editQrcode() {
-        const newQrcode: string | null = prompt("Enter QR Code value", $options.qrcode);
+        const newQrcode: string | null = prompt('Enter QR Code value', $options.qrcode);
     
         if (newQrcode) {
             $options.qrcode = newQrcode;
@@ -449,12 +449,12 @@ npm run dev -- --host
             const file = element.files[0];
 
             if (file.size > 5000000) {
-                alert("Image too large (>5MB)");
+                alert('Image too large (>5MB)');
 
                 return;
             }
 
-            if (file.type === "image/png" || file.type === "image/jpeg") {
+            if (file.type === 'image/png' || file.type === 'image/jpeg') {
                 const reader = new FileReader();
                 reader.onload = function() {
                     if (reader.result && typeof(reader.result) === 'string') {
@@ -479,12 +479,12 @@ npm run dev -- --host
             const file = element.files[0];
 
             if (file.size > 2000000) {
-                alert("Font too large (>5MB)");
+                alert('Font too large (>5MB)');
 
                 return;
             }
             else if ($fonts[file.name]) {
-                alert("Font already in list");
+                alert('Font already in list');
 
                 return;
             }
@@ -501,8 +501,8 @@ npm run dev -- --host
                         $style[field_name].font_name = file.name;
 
                         $fonts[file.name] = {
-                            "data": result,
-                            "fallback": false
+                            'data': result,
+                            'fallback': false
                         };
                     }
                 }
@@ -571,7 +571,7 @@ npm run dev -- --host
             schemas: [
                 {
                     qrcodeField: {
-                        type: "qrcode",
+                        type: 'qrcode',
                         position: {
                             x: 2,
                             y: 2
@@ -580,7 +580,7 @@ npm run dev -- --host
                         height: 16
                     },
                     logoField: {
-                        type: "image",
+                        type: 'image',
                         position: {
                             x: 2,
                             y: 2
@@ -589,7 +589,7 @@ npm run dev -- --host
                         height: 16
                     },
                     textField1: {
-                        type: "text",
+                        type: 'text',
                         position: {
                             x: 20,
                             y: 0.5
@@ -599,14 +599,14 @@ npm run dev -- --host
                         fontName: $style.field1.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
-                            "min": 1,
-                            "max": 100,
-                            "fit": "vertical"
+                            'min': 1,
+                            'max': 100,
+                            'fit': 'vertical'
                         },
                         underline: $style.field1.underline
                     },
                     textField2: {
-                        type: "text",
+                        type: 'text',
                         position: {
                             x: 20,
                             y: 4.5
@@ -616,14 +616,14 @@ npm run dev -- --host
                         fontName: $style.field2.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
-                            "min": 1,
-                            "max": 100,
-                            "fit": "vertical"
+                            'min': 1,
+                            'max': 100,
+                            'fit': 'vertical'
                         },
                         underline: $style.field2.underline
                     },
                     textField3: {
-                        type: "text",
+                        type: 'text',
                         position: {
                             x: 20,
                             y: 8.5
@@ -633,14 +633,14 @@ npm run dev -- --host
                         fontName: $style.field3.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
-                            "min": 1,
-                            "max": 100,
-                            "fit": "vertical"
+                            'min': 1,
+                            'max': 100,
+                            'fit': 'vertical'
                         },
                         underline: $style.field3.underline
                     },
                     textField4: {
-                        type: "text",
+                        type: 'text',
                         position: {
                             x: 20,
                             y: 12.5
@@ -650,14 +650,14 @@ npm run dev -- --host
                         fontName: $style.field4.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
-                            "min": 1,
-                            "max": 100,
-                            "fit": "vertical"
+                            'min': 1,
+                            'max': 100,
+                            'fit': 'vertical'
                         },
                         underline: $style.field4.underline
                     },
                     textField5: {
-                        type: "text",
+                        type: 'text',
                         position: {
                             x: 20,
                             y: 16
@@ -667,9 +667,9 @@ npm run dev -- --host
                         fontName: $style.field5.font_name,
                         lineHeight: 0.8,
                         dynamicFontSize: {
-                            "min": 1,
-                            "max": 100,
-                            "fit": "vertical"
+                            'min': 1,
+                            'max': 100,
+                            'fit': 'vertical'
                         },
                         underline: $style.field5.underline
                     }
@@ -680,8 +680,8 @@ npm run dev -- --host
         const pdf = await PDFDocument.create();
 
         for (let i in Object.entries($list)) {
-            let qrcode = "";
-            let logo = "";
+            let qrcode = '';
+            let logo = '';
             
             if (!input_elements.logo.classList.contains('hidden') && $options.logo) {
                 logo = $options.logo;
@@ -720,105 +720,105 @@ npm run dev -- --host
         window.location.href = URL.createObjectURL(blob);
     }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<div id="main_div" class="stretch">
-    <div id="background_cover" class="stretch"></div>
-    <div id="left_div">
-        <div id="input_container" class="container">
-            <div id="input" class="object">
-                <div id="input_thumbnail">
-                    <input id="input_qrcode" type="image" src="./sampleqrcode.svg" alt="input qrcode" on:click={() => editQrcode()}>
-                    <div id="input_logo" class="hidden">
-                        <img id="input_logo_image" class="stretch" alt="input logo">
-                        <input id="input_logo_button" type="file" accept="image/png, image/jpeg" on:change={(event) => editLogo(event.currentTarget)}>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link href='https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap' rel='stylesheet'>
+<div id='main_div' class='stretch'>
+    <div id='background_cover' class='stretch'></div>
+    <div id='left_div'>
+        <div id='input_container' class='container'>
+            <div id='input' class='object'>
+                <div id='input_thumbnail'>
+                    <input id='input_qrcode' type='image' src='./sampleqrcode.svg' alt='input qrcode' on:click={() => editQrcode()}>
+                    <div id='input_logo' class='hidden'>
+                        <img id='input_logo_image' class='stretch' alt='input logo'>
+                        <input id='input_logo_button' type='file' accept='image/png, image/jpeg' on:change={(event) => editLogo(event.currentTarget)}>
                     </div>
                 </div>
-                <div id="input_fields">
-                    <input id="input_field1" class="input_field" placeholder="field1" on:input={(event) => handlePaste(event)}>
-                    <input id="input_field2" class="input_field" placeholder="field2">
-                    <input id="input_field3" class="input_field" placeholder="field3">
-                    <input id="input_field4" class="input_field input_field_small" placeholder="field4">
-                    <input id="input_field5" class="input_field input_field_small" placeholder="field5">
+                <div id='input_fields'>
+                    <input id='input_field1' class='input_field' placeholder='field1' on:input={(event) => handlePaste(event)}>
+                    <input id='input_field2' class='input_field' placeholder='field2'>
+                    <input id='input_field3' class='input_field' placeholder='field3'>
+                    <input id='input_field4' class='input_field input_field_small' placeholder='field4'>
+                    <input id='input_field5' class='input_field input_field_small' placeholder='field5'>
                 </div>
-                <select id="input_count" class="button">
+                <select id='input_count' class='button'>
                     {#each Array.from(Array(100).keys()).slice(1, 100) as n}
-                        <option value="{String(n)}">{n}</option>
+                        <option value='{String(n)}'>{n}</option>
                     {/each}
                 </select>
-                <input id="input_add" class="button" type="button" value="add" on:click={() => addItem()}>
+                <input id='input_add' class='button' type='button' value='add' on:click={() => addItem()}>
             </div>
         </div>
-        <div id="history_container" class="container">
+        <div id='history_container' class='container'>
             {#each Object.entries($history) as [id, item]}
-            <div id={id} class="object history_item">
-                <div class="history_item_fields">
-                    <input id="field1" class="history_item_field" placeholder="field1" value={$history[id].field1} disabled>
-                    <input id="field2" class="history_item_field" placeholder="field2" value={$history[id].field2} disabled>
-                    <input id="field3" class="history_item_field" placeholder="field3" value={$history[id].field3} disabled>
-                    <input id="field4" class="history_item_field history_item_field_small" placeholder="field4" value={$history[id].field4} disabled>
+            <div id={id} class='object history_item'>
+                <div class='history_item_fields'>
+                    <input id='field1' class='history_item_field' placeholder='field1' value={$history[id].field1} disabled>
+                    <input id='field2' class='history_item_field' placeholder='field2' value={$history[id].field2} disabled>
+                    <input id='field3' class='history_item_field' placeholder='field3' value={$history[id].field3} disabled>
+                    <input id='field4' class='history_item_field history_item_field_small' placeholder='field4' value={$history[id].field4} disabled>
                 </div>
-                <input class="button history_item_use" type="button" value="use" on:click={(event) => useHistory(event.currentTarget)}>
-                <input class="button history_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+                <input class='button history_item_use' type='button' value='use' on:click={(event) => useHistory(event.currentTarget)}>
+                <input class='button history_item_delete' type='button' value='delete' on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
             {/each}
         </div>
     </div>
-    <div id="right_div">
-        <div id="list_container" class="container">
+    <div id='right_div'>
+        <div id='list_container' class='container'>
             {#each Object.entries($list) as [id, item]}
-            <div id={id} class="object list_item">
-                <div class="list_item_thumbnail">
-                    <img class="list_item_qrcode" src="./sampleqrcode.svg" alt="list item qrcode" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
-                    <img class="list_item_logo hidden" src={$options.logo} alt="list item logo" on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.remove('hidden'); } }}>
+            <div id={id} class='object list_item'>
+                <div class='list_item_thumbnail'>
+                    <img class='list_item_qrcode' src='./sampleqrcode.svg' alt='list item qrcode' on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.add('hidden'); } }}>
+                    <img class='list_item_logo hidden' src={$options.logo} alt='list item logo' on:load={(event) => { if ($options.use_logo) { event.currentTarget.classList.remove('hidden'); } }}>
                 </div>
-                <div class="list_item_fields">
-                    <input class="list_item_field" bind:value={$list[id].field1}>
-                    <input class="list_item_field" bind:value={$list[id].field2}>
-                    <input class="list_item_field" bind:value={$list[id].field3}>
-                    <input class="list_item_field list_item_field_small" bind:value={$list[id].field4}>
-                    <input class="list_item_field list_item_field_small" bind:value={$list[id].field5}>
+                <div class='list_item_fields'>
+                    <input class='list_item_field' bind:value={$list[id].field1}>
+                    <input class='list_item_field' bind:value={$list[id].field2}>
+                    <input class='list_item_field' bind:value={$list[id].field3}>
+                    <input class='list_item_field list_item_field_small' bind:value={$list[id].field4}>
+                    <input class='list_item_field list_item_field_small' bind:value={$list[id].field5}>
                 </div>
-                <select id="count" class="button list_item_count" bind:value={$list[id].count}>
+                <select id='count' class='button list_item_count' bind:value={$list[id].count}>
                     {#each Array.from(Array(100).keys()).slice(1, 100) as n}
-                        <option value="{String(n)}">{n}</option>
+                        <option value='{String(n)}'>{n}</option>
                     {/each}
                 </select>
-                <input class="button list_item_delete" type="button" value="delete" on:click={(event) => deleteItem(event.currentTarget)}>
+                <input class='button list_item_delete' type='button' value='delete' on:click={(event) => deleteItem(event.currentTarget)}>
             </div>
             {/each}
         </div>
-        <div id="output_container" class="container">
-            <div id="output_main" class="object">
-                <input id="output_submit" class="button" type="button" value="Submit!" on:click={() => submit()}>
-                <input id="output_clear_list" class="button" type="button" value="Clear list" on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
+        <div id='output_container' class='container'>
+            <div id='output_main' class='object'>
+                <input id='output_submit' class='button' type='button' value='Submit!' on:click={() => submit()}>
+                <input id='output_clear_list' class='button' type='button' value='Clear list' on:click={() => { if (confirm('Clear list?')) { $list = {} } } }>
             </div>
-            <div id="output_other" class="object">
-                <input id="output_options" class="button" type="button" value="Options" on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
+            <div id='output_other' class='object'>
+                <input id='output_options' class='button' type='button' value='Options' on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
             </div>
         </div>
     </div>
 </div>
-<div id="options_div" class="stretch hidden">
-    <div id="options_container" class="container">
-        <div id="option_thumbnail">
-            <input id='option_thumbnail_range' type="range" max="1" step="1" value="0" on:input={(event) => {
+<div id='options_div' class='stretch hidden'>
+    <div id='options_container' class='container'>
+        <div id='option_thumbnail'>
+            <input id='option_thumbnail_range' type='range' max='1' step='1' value='0' on:input={(event) => {
                 let option_rotate_display_element = document.getElementById('option_thumbnail_display');
                 if (option_rotate_display_element) {
-                    if (event.currentTarget.value === "0") {
-                        option_rotate_display_element.innerText = "qrcode";
+                    if (event.currentTarget.value === '0') {
+                        option_rotate_display_element.innerText = 'qrcode';
                     }
                     else {
-                        option_rotate_display_element.innerText = "logo";
+                        option_rotate_display_element.innerText = 'logo';
                     }
 
                     useLogo(Boolean(Number(event.currentTarget.value)));
                 }
             }}>
-            <div id="option_thumbnail_display"></div>
+            <div id='option_thumbnail_display'></div>
         </div>
-        <div id="option_rotate">
-            <input id='option_rotate_range' type="range" max="270" step="90" value="0" on:input={(event) => {
+        <div id='option_rotate'>
+            <input id='option_rotate_range' type='range' max='270' step='90' value='0' on:input={(event) => {
                 let option_rotate_display_element = document.getElementById('option_rotate_display');
                 if (option_rotate_display_element) {
                     option_rotate_display_element.innerText = event.currentTarget.value;
@@ -826,21 +826,25 @@ npm run dev -- --host
 
                 $options.rotation = Number(event.currentTarget.value);
             }}>
-            <div id="option_rotate_display"></div>
+            <div id='option_rotate_display'></div>
         </div>
-        <select id="option_target_select" class="button">
-            {#each ["field1", "field2", "field3", "field4", "field5"] as field}
-                <option value="{field}">{field}</option>
+        <div id='style' class='object'>
+            {#each ['field1', 'field2', 'field3', 'field4', 'field5'] as field}
+                <input class='style_tab' value='{field}'>
             {/each}
-        </select>
-        <div id="option_font">
-            <select id="option_font" class="button">
+            <select id='option_font' class='button'>
                 {#each Object.entries($fonts) as [name, data]}
-                    <option value="{name}">{name}</option>
+                    <option value='{name}'>{name}</option>
                 {/each}
             </select>
-            <input id="option_font_button" class="button" type="file" on:change={(event) => uploadFont(event.currentTarget)}>
+            <input id='style_size' type='number' min='0' max='100'>
+            <label for='style_underline'>underline</label>
+            <input id='style_underline' type='checkbox'>
         </div>
-        <input id="option_return" class="button" type="button" value="Return" on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
+        <input id='option_font_button' class='button' type='file' on:change={(event) => uploadFont(event.currentTarget)}>
+
+        <input id='option_export_history' class='button' type='button' value='Export History' disabled>
+        <input id='option_export_list' class='button' type='button' value='Export list' disabled>
+        <input id='option_return' class='button' type='button' value='Return' on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
     </div>
 </div>
