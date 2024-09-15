@@ -343,13 +343,13 @@ npm run dev -- --host
             ['field1', 'field2', 'field3', 'field4', 'field5'].forEach(field => {
                 $style[field] = {
                     'font_name': 'Montserrat',
-                    'field_height': 21,
+                    'field_height': 3.5,
                     'underline': false
                 };
             });
 
             ['field4', 'field5'].forEach(field => {
-                $style[field].field_height = 18.5;
+                $style[field].field_height = 2.75;
             });
         };
 
@@ -652,9 +652,8 @@ npm run dev -- --host
                             y: 0.5
                         },
                         width: 80,
-                        height: 3,
+                        height: $style.field1.field_height,
                         fontName: $style.field1.font_name,
-                        lineHeight: 0.8,
                         dynamicFontSize: {
                             'min': 1,
                             'max': 100,
@@ -666,12 +665,11 @@ npm run dev -- --host
                         type: 'text',
                         position: {
                             x: 20,
-                            y: 4.5
+                            y: 0.5 * 2 + $style.field1.field_height
                         },
                         width: 80,
-                        height: 3,
+                        height: $style.field2.field_height,
                         fontName: $style.field2.font_name,
-                        lineHeight: 0.8,
                         dynamicFontSize: {
                             'min': 1,
                             'max': 100,
@@ -683,12 +681,11 @@ npm run dev -- --host
                         type: 'text',
                         position: {
                             x: 20,
-                            y: 8.5
+                            y: 0.5 * 3 + $style.field1.field_height + $style.field2.field_height
                         },
                         width: 80,
-                        height: 3,
+                        height: $style.field3.field_height,
                         fontName: $style.field3.font_name,
-                        lineHeight: 0.8,
                         dynamicFontSize: {
                             'min': 1,
                             'max': 100,
@@ -700,12 +697,11 @@ npm run dev -- --host
                         type: 'text',
                         position: {
                             x: 20,
-                            y: 12.5
+                            y: 0.5 * 4 + $style.field1.field_height + $style.field2.field_height + $style.field3.field_height
                         },
                         width: 80,
-                        height: 2.5,
+                        height: $style.field4.field_height,
                         fontName: $style.field4.font_name,
-                        lineHeight: 0.8,
                         dynamicFontSize: {
                             'min': 1,
                             'max': 100,
@@ -717,12 +713,11 @@ npm run dev -- --host
                         type: 'text',
                         position: {
                             x: 20,
-                            y: 16
+                            y: 0.5 * 5 + $style.field1.field_height + $style.field2.field_height + $style.field3.field_height + $style.field4.field_height
                         },
                         width: 80,
-                        height: 2.5,
+                        height: $style.field5.field_height,
                         fontName: $style.field5.font_name,
-                        lineHeight: 0.8,
                         dynamicFontSize: {
                             'min': 1,
                             'max': 100,
