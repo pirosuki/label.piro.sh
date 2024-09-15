@@ -239,24 +239,17 @@ npm run dev -- --host
         aspect-ratio: 3 / 1;
     }
 
-    .style_tab {
+    .style_field {
         float: left;
-        width: calc(20%);
-        height: 10%;
-        text-align: center;
-        background-color: rgba(220, 220, 220, 0.8);
+        width: 100%;
     }
 
-    .style_tab_active {
-        background-color: white;
+    #style_underline {
+        
     }
 
-    #style_tab_field1 {
-        border-top-left-radius: 0.8vmin;
-    }
-
-    #style_tab_field5 {
-        border-top-right-radius: 0.8vmin;
+    .style_option {
+        float: left;
     }
 </style>
 
@@ -853,8 +846,22 @@ npm run dev -- --host
 </div>
 <div id='options_div' class='stretch hidden'>
     <div id='options_container' class='container'>
+        <div id='style' class='object'>
+            {#each Object.entries($style) as [field, data]}
+                <div id='style_{field}' class='style_field'>
+                    <select id='option_font' class='button style_option' bind:value={$style[field].font_name}>
+                        {#each Object.entries($fonts) as [name, data]}
+                            <option value='{name}'>{name}</option>
+                        {/each}
+                    </select>
+                    <input id='style_size' class='button style_option' type='number' step='0.25' min='0' max='100' bind:value={$style[field].field_height}>
+                </div>
+            {/each}
+        </div>
+        <input id='option_font_button' class='button' type='file' on:change={(event) => uploadFont(event.currentTarget)}>
+
         <div id='option_thumbnail'>
-            <input id='option_thumbnail_range' type='range' max='1' step='1' value='0' on:input={(event) => {
+            <input id='option_thumbnail_range' class='button' type='range' max='1' step='1' value='0' on:input={(event) => {
                 let option_rotate_display_element = document.getElementById('option_thumbnail_display');
                 if (option_rotate_display_element) {
                     if (event.currentTarget.value === '0') {
@@ -870,7 +877,7 @@ npm run dev -- --host
             <div id='option_thumbnail_display'></div>
         </div>
         <div id='option_rotate'>
-            <input id='option_rotate_range' type='range' max='270' step='90' value='0' on:input={(event) => {
+            <input id='option_rotate_range' class='button' type='range' max='270' step='90' value='0' on:input={(event) => {
                 let option_rotate_display_element = document.getElementById('option_rotate_display');
                 if (option_rotate_display_element) {
                     option_rotate_display_element.innerText = event.currentTarget.value;
@@ -880,21 +887,6 @@ npm run dev -- --host
             }}>
             <div id='option_rotate_display'></div>
         </div>
-        <div id='style' class='object'>
-            {#each Object.entries($style) as [field, data]}
-                <div id='style_{field}'>
-                    <select id='option_font' class='button' bind:value={$style[field].font_name}>
-                        {#each Object.entries($fonts) as [name, data]}
-                            <option value='{name}'>{name}</option>
-                        {/each}
-                    </select>
-                    <input id='style_size' type='number' min='0' max='100' bind:value={$style[field].field_height}>
-                    <label for='style_underline'>underline</label>
-                    <input id='style_underline' type='checkbox' bind:value={$style[field].underline}>
-                </div>
-            {/each}
-        </div>
-        <input id='option_font_button' class='button' type='file' on:change={(event) => uploadFont(event.currentTarget)}>
 
         <input id='option_export_history' class='button' type='button' value='Export History' disabled>
         <input id='option_export_list' class='button' type='button' value='Export list' disabled>
