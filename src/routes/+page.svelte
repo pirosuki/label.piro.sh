@@ -836,7 +836,7 @@ npm run dev -- --host
         <div id='output_container' class='container'>
             <div id='output_main' class='object'>
                 <input id='output_submit' class='button' type='button' value='Submit!' on:click={() => submit()}>
-                <input id='output_clear_list' class='button' type='button' value='Clear list' on:click={() => { if (confirm('Clear list?')) { $list = {} } } }>
+                <input id='output_clear_list' class='button' type='button' value='Clear list' on:click={() => { if (confirm("Clear list?")) { $list = {} } } }>
             </div>
             <div id='output_other' class='object'>
                 <input id='output_options' class='button' type='button' value='Options' on:click={() => { document.getElementById('main_div')?.classList.add('hidden'); document.getElementById('options_div')?.classList.remove('hidden'); }}>
@@ -887,9 +887,12 @@ npm run dev -- --host
             }}>
             <div id='option_rotate_display'></div>
         </div>
-
+        
         <input id='option_export_history' class='button' type='button' value='Export History' disabled>
         <input id='option_export_list' class='button' type='button' value='Export list' disabled>
+        
+        <input id='option_reset' class='button' type='button' value='Reset' on:click={() => { if (confirm("Reset?")) { localStorage.clear(); location.reload(); } }}>
+
         <input id='option_return' class='button' type='button' value='Return' on:click={() => { document.getElementById('options_div')?.classList.add('hidden'); document.getElementById('main_div')?.classList.remove('hidden'); }}>
     </div>
 </div>
