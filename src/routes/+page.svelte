@@ -233,6 +233,31 @@ npm run dev -- --host
         height: calc(100% - 2vmin);
     }
     /* */
+
+    #style {
+        width: calc(100% - 1.6vmin);
+        aspect-ratio: 3 / 1;
+    }
+
+    .style_tab {
+        float: left;
+        width: calc(20%);
+        height: 10%;
+        text-align: center;
+        background-color: rgba(220, 220, 220, 0.8);
+    }
+
+    .style_tab_active {
+        background-color: white;
+    }
+
+    #style_tab_field1 {
+        border-top-left-radius: 0.8vmin;
+    }
+
+    #style_tab_field5 {
+        border-top-right-radius: 0.8vmin;
+    }
 </style>
 
 <script lang='ts'>
@@ -275,6 +300,7 @@ npm run dev -- --host
 
     type style_item = {
         'font_name': string,
+        'field_height': number,
         'underline': boolean
     }
     const style = writable<{[key: string]: style_item}>({});
@@ -295,7 +321,7 @@ npm run dev -- --host
         // restore values from localStorage if exist
         if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
         if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
-        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{} };
+        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{}; };
         if (localStorage.fonts) { $fonts = JSON.parse(localStorage.fonts); } else {
             fetch('./Montserrat-Regular.ttf').then((response) => response.blob().then((blob) => {
                 const reader = new FileReader();
@@ -306,21 +332,25 @@ npm run dev -- --host
                                 'data': reader.result,
                                 'fallback': true
                             }
-                        }
-                    }
-                }
+                        };
+                    };
+                };
 
                 reader.readAsDataURL(blob);
-            }))
+            }));
         };
         if (localStorage.style) { $style = JSON.parse(localStorage.style); } else {
-            $style = {
-                field1: <style_item>{},
-                field2: <style_item>{},
-                field3: <style_item>{},
-                field4: <style_item>{},
-                field5: <style_item>{}
-            };
+            ['field1', 'field2', 'field3', 'field4', 'field5'].forEach(field => {
+                $style[field] = {
+                    'font_name': 'Montserrat',
+                    'field_height': 21,
+                    'underline': false
+                };
+            });
+
+            ['field4', 'field5'].forEach(field => {
+                $style[field].field_height = 18.5;
+            });
         };
 
         list.subscribe((value) => localStorage.list = JSON.stringify(value));
@@ -495,11 +525,6 @@ npm run dev -- --host
                     if (reader.result && typeof(reader.result) === 'string') {
                         const result: string = reader.result;
 
-                        console.log(reader.result);
-
-                        const field_name = (document.getElementById('option_target_select') as HTMLInputElement).value;
-                        $style[field_name].font_name = file.name;
-
                         $fonts[file.name] = {
                             'data': result,
                             'fallback': false
@@ -559,6 +584,38 @@ npm run dev -- --host
         }
 
         $options.use_logo = value;
+    }
+
+    function swapStyleTab(new_tab: HTMLElement, field: string) {
+        Object.entries(document.getElementsByClassName('style_tab')).forEach(([i, element]) => {
+            element.classList.remove('style_tab_active');
+        })
+
+        new_tab.classList.add('style_tab_active');
+
+        const option_font_element = document.getElementById('option_font') as HTMLInputElement;
+        if ($style[field].font_name) {
+            option_font_element.value = $style[field].font_name;
+        }
+        else {
+            option_font_element.value = '';
+        }
+        
+        const style_size_element = document.getElementById('style_size') as HTMLInputElement;
+        if ($style[field].field_height) {
+            style_size_element.value = String($style[field].field_height);
+        }
+        else {
+            style_size_element.value = '';
+        }
+
+        const style_underline_element = document.getElementById('style_underline') as HTMLInputElement;
+        if ($style[field].underline) {
+            style_underline_element.value = String($style[field].underline);
+        }
+        else {
+            style_underline_element.value = '';
+        }
     }
 
     async function submit() {
@@ -829,17 +886,18 @@ npm run dev -- --host
             <div id='option_rotate_display'></div>
         </div>
         <div id='style' class='object'>
-            {#each ['field1', 'field2', 'field3', 'field4', 'field5'] as field}
-                <input class='style_tab' value='{field}'>
+            {#each Object.entries($style) as [field, data]}
+                <div id='style_{field}'>
+                    <select id='option_font' class='button' bind:value={$style[field].font_name}>
+                        {#each Object.entries($fonts) as [name, data]}
+                            <option value='{name}'>{name}</option>
+                        {/each}
+                    </select>
+                    <input id='style_size' type='number' min='0' max='100' bind:value={$style[field].field_height}>
+                    <label for='style_underline'>underline</label>
+                    <input id='style_underline' type='checkbox' bind:value={$style[field].underline}>
+                </div>
             {/each}
-            <select id='option_font' class='button'>
-                {#each Object.entries($fonts) as [name, data]}
-                    <option value='{name}'>{name}</option>
-                {/each}
-            </select>
-            <input id='style_size' type='number' min='0' max='100'>
-            <label for='style_underline'>underline</label>
-            <input id='style_underline' type='checkbox'>
         </div>
         <input id='option_font_button' class='button' type='file' on:change={(event) => uploadFont(event.currentTarget)}>
 
