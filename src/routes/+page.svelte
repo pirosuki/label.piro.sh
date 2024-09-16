@@ -242,14 +242,16 @@ npm run dev -- --host
     .style_field {
         float: left;
         width: 100%;
-    }
-
-    #style_underline {
-        
+        height: 20%;
     }
 
     .style_option {
         float: left;
+        height: calc(100% - 1.2vmin);
+    }
+
+    #option_font {
+        width: 30%;
     }
 </style>
 
