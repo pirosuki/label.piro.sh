@@ -52,7 +52,7 @@ npm run dev -- --host
     }
 
     .button:hover {
-        background-color: rgba(230, 230, 230, 0.8);;
+        background-color: rgba(230, 230, 230, 0.8);
     }
 
     .button:active {
@@ -316,7 +316,7 @@ npm run dev -- --host
         // restore values from localStorage if exist
         if (localStorage.history) { $history = JSON.parse(localStorage.history); } else { $history = {}; };
         if (localStorage.list) { $list = JSON.parse(localStorage.list); } else { $list = {}; };
-        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = <options_type>{}; };
+        if (localStorage.options) { $options = JSON.parse(localStorage.options); } else { $options = {} as options_type; };
         if (localStorage.fonts) { $fonts = JSON.parse(localStorage.fonts); } else {
             fetch('./Montserrat-Regular.ttf').then((response) => response.blob().then((blob) => {
                 const reader = new FileReader();
@@ -546,7 +546,13 @@ npm run dev -- --host
             else if (input_event.data?.includes('	')) {
                 data_formatted = input_event.data?.split('	');
             }
+            // if neither then return
+            else {
+                return;
+            }
             
+            // clear first line before entering new
+            input_elements.field1.value = '';
 
             for (let i in data_formatted.slice(0, 5)) {
                 const input_elements_fields = [input_elements.field1, input_elements.field2, input_elements.field3, input_elements.field4, input_elements.field5];
@@ -615,14 +621,15 @@ npm run dev -- --host
 
     async function submit() {
         const template: Template = {
-            basePdf: <BlankPdf> {
+            basePdf: {
                 width: 100,
                 height: 20,
                 padding: [0, 0, 0, 0]
-            },
+            } as BlankPdf,
             schemas: [
-                {
-                    qrcodeField: {
+                [
+                    {
+                        name: 'qrcodeField',
                         type: 'qrcode',
                         position: {
                             x: 2,
@@ -631,7 +638,8 @@ npm run dev -- --host
                         width: 16,
                         height: 16
                     },
-                    logoField: {
+                    {
+                        name: 'logoField',
                         type: 'image',
                         position: {
                             x: 2,
@@ -640,7 +648,8 @@ npm run dev -- --host
                         width: 16,
                         height: 16
                     },
-                    textField1: {
+                    {
+                        name: 'textField1',
                         type: 'text',
                         position: {
                             x: 20,
@@ -656,7 +665,8 @@ npm run dev -- --host
                         },
                         underline: $style.field1.underline
                     },
-                    textField2: {
+                    {
+                        name: 'textField2',
                         type: 'text',
                         position: {
                             x: 20,
@@ -672,7 +682,8 @@ npm run dev -- --host
                         },
                         underline: $style.field2.underline
                     },
-                    textField3: {
+                    {
+                        name: 'textField3',
                         type: 'text',
                         position: {
                             x: 20,
@@ -688,7 +699,8 @@ npm run dev -- --host
                         },
                         underline: $style.field3.underline
                     },
-                    textField4: {
+                    {
+                        name: 'textField4',
                         type: 'text',
                         position: {
                             x: 20,
@@ -704,7 +716,8 @@ npm run dev -- --host
                         },
                         underline: $style.field4.underline
                     },
-                    textField5: {
+                    {
+                        name: 'textField5',
                         type: 'text',
                         position: {
                             x: 20,
@@ -720,7 +733,7 @@ npm run dev -- --host
                         },
                         underline: $style.field5.underline
                     }
-                }
+                ]
             ]
         }
 
