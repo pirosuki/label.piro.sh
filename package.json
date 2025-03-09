@@ -20,7 +20,8 @@
         "svelte": "^5.22.6",
         "svelte-check": "^4.1.5",
         "typescript": "^5.8.2",
-        "vite": "^6.2.1"
+        "vite": "^6.2.1",
+        "gh-pages": "^6.3.0"
     },
     "dependencies": {
         "@pdfme/common": "^5.3.13",
