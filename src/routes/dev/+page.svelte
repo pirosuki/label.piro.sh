@@ -289,11 +289,22 @@ npm run dev -- --host
 
         const historyEntry = $history[element.parentElement?.id as string];
 
-        input_elements.field1.value = historyEntry.field1;
-        input_elements.field2.value = historyEntry.field2;
-        input_elements.field3.value = historyEntry.field3;
-        input_elements.field4.value = historyEntry.field4;
-        input_elements.field5.value = historyEntry.field5;
+        // allow empty fields but make sure they are defined
+        if (historyEntry.field1 !== undefined) {
+          input_elements.field1.value = historyEntry.field1;
+        }
+        if (historyEntry.field2 !== undefined) {
+          input_elements.field2.value = historyEntry.field2;
+        }
+        if (historyEntry.field3 !== undefined) {
+          input_elements.field3.value = historyEntry.field3;
+        }
+        if (historyEntry.field4 !== undefined) {
+          input_elements.field4.value = historyEntry.field4;
+        }
+        if (historyEntry.field5 !== undefined) {
+          input_elements.field5.value = historyEntry.field5;
+        }
     }
 
     function editQrcode(event: Event | undefined) {
