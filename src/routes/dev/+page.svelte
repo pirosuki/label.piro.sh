@@ -289,7 +289,11 @@ npm run dev -- --host
 
         const historyEntry = $history[element.parentElement?.id as string];
 
-        // allow empty fields but make sure they are defined
+        console.log(historyEntry);
+
+        if (historyEntry.qrcode !== undefined) {
+          $options.qrcode = historyEntry.qrcode;
+        }
         if (historyEntry.field1 !== undefined) {
           input_elements.field1.value = historyEntry.field1;
         }
