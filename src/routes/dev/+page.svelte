@@ -289,8 +289,6 @@ npm run dev -- --host
 
         const historyEntry = $history[element.parentElement?.id as string];
 
-        console.log(historyEntry);
-
         if (historyEntry.qrcode !== undefined) {
           $options.qrcode = historyEntry.qrcode;
         }
